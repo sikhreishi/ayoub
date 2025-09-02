@@ -1,0 +1,10 @@
+[type=text], input:where(:not([type])), [type=email], [type=url], [type=password], [type=number], [type=date], [type=datetime-local], [type=month], [type=search], [type=tel], [type=time], [type=week], [multiple], textarea, select {
+    background-color: #0f1535 !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    padding: 0 !important;
+}
+.select2-container--default .select2-selection--single ,.select2-container--default .select2-selection--multiple , .select2-container--default .select2-selection--multiple .select2-selection__choice{
+    background-color: transparent !important;
+}
