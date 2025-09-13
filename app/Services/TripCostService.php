@@ -14,7 +14,4 @@ class TripCostService
         return ($estimated_fare * $commissionPercentage) / 100;
     }
 
-    
-
-
 }

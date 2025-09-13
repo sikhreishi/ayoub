@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\Shared\{
     TripReviewController,
 };
 
+Route::get('countries', [UserAuthController::class, 'getCountries']);
 Route::prefix('user')->group(function () {
     Route::post('register', [UserAuthController::class, 'register']);
     Route::post('login', [UserAuthController::class, 'login']);
@@ -25,6 +26,8 @@ Route::prefix('user')->group(function () {
     Route::post('resend-otp', [UserAuthController::class, 'resendOTP']);
     Route::post('reset-password', [UserAuthController::class, 'resetPassword']);
 });
+
+    Route::get('get-car-type', [DriverAuthController::class, 'getCarType']);
 
 Route::prefix('driver')->group(function () {
     Route::post('register', [DriverAuthController::class, 'register']);
@@ -43,7 +46,8 @@ Route::middleware(['auth:sanctum', 'role:user'])->prefix('user')->group(function
     Route::get('get/{id}', [DriverProfileController::class, 'getDriverById']);
 
     Route::delete('delete', [UserProfileController::class, 'destroy']);
-    Route::put("update", [UserProfileController::class, "update"]);
+    Route::post("update", [UserProfileController::class, "update"]);
+     Route::put('password', [UserProfileController::class, 'updatePassword']);
 
     Route::prefix('trip')->group(function () {
         Route::post('vehicle-types', [UserTripController::class, 'fetchVehicleTypes']);
@@ -64,7 +68,8 @@ Route::middleware(['auth:sanctum', 'role:driver'])->prefix('driver')->group(func
     Route::post('/trip-reviews', [TripReviewController::class, 'store']);
     Route::get('get/{id}', [DriverProfileController::class, 'getDriverById']);
     Route::delete('delete', [DriverProfileController::class, 'destroy']);
-    Route::put("update", [UserProfileController::class, "update"]);
+    Route::post("update", [DriverProfileController::class, "update"]);
+     Route::put('password', [DriverProfileController::class, 'updatePassword']);
 
     Route::prefix('trip')->group(function () {
         Route::get('{tripId}', [DriverTripController::class, 'getDriverTrip']);

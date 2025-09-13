@@ -25,4 +25,36 @@ class UserUpdateProfileRequest extends ApiFormRequest
             'gender' => 'sometimes|in:male,female,other',
         ];
     }
+
+public function messages(): array
+{
+    return [
+        // name
+        'name.string'  => 'The name must be a valid text.',
+        'name.max'     => 'The name may not be greater than :max characters.',
+
+        // email
+        'email.email'  => 'Please enter a valid email address.',
+        'email.max'    => 'The email may not be greater than :max characters.',
+        'email.unique' => 'This email is already taken.',
+
+        // phone
+        'phone.string'  => 'The phone number must be a valid text/number string.',
+        'phone.max'     => 'The phone number may not be greater than :max characters.',
+        'phone.unique'  => 'This phone number is already in use.',
+
+        // language
+        'language.string' => 'The language must be a valid text code.',
+        'language.max'    => 'The language code may not be greater than :max characters.',
+
+        // avatar
+        'avatar.image' => 'The avatar must be an image file.',
+        'avatar.mimes' => 'The avatar must be a file of type: jpeg, png, jpg, gif, svg.',
+        'avatar.max'   => 'The avatar may not be greater than :max kilobytes.',
+
+        // gender
+        'gender.in' => 'The selected gender is invalid. Allowed values: male, female, other.',
+    ];
+}
+    
 }

@@ -7,8 +7,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Exception;
-use App\Http\Requests\api\Profile\Driver\DriverUpdateProfileRequest;
 use App\Services\Firebase\FirebaseService;
+use App\Http\Requests\Api\Profile\Driver\DriverUpdateProfileRequest;  // This was correct
+use Illuminate\Support\Facades\Hash;
 
 class DriverProfileController extends Controller
 {
@@ -63,16 +64,31 @@ class DriverProfileController extends Controller
             ], 500);
         }
     }
+public function update(DriverUpdateProfileRequest $request)
+{
+    $user = Auth::user();
 
-    public function update(DriverUpdateProfileRequest $request)
-    {
-        $user = Auth::user();
-        $user->update($request->validated());
-        return response()->json([
-            "message" => "update is Success",
-            "user" => $user
-        ]);
+    // Step 1: Validate the input data
+    $validated = $request->validated();
+
+    // Step 2: Handle Avatar Upload (if provided)
+    if ($request->hasFile('avatar')) {
+        // Store the avatar file in the 'avatars' folder in 'storage/app/public'
+        $avatarPath = $request->file('avatar')->store('avatars', 'public');
+        // Save the avatar path in the validated data
+        $validated['avatar'] = $avatarPath;
     }
+
+    // Step 3: Update the user's profile with validated data
+    $user->update($validated);
+
+    return response()->json([
+        "message" => "Update is successful",
+        "user" => $user, // The updated user data, including the avatar path
+    ]);
+}
+
+
     public function destroy()
     {
         DB::beginTransaction();
@@ -102,4 +118,28 @@ class DriverProfileController extends Controller
             ], 500);
         }
     }
+
+
+     public function updatePassword(UserChangePasswordRequest $request)
+{
+    $user = Auth::user();
+
+    DB::beginTransaction();
+    try {
+        $user->password = Hash::make($request->input('password'));
+        $user->save();
+
+        DB::commit();
+
+        return response()->json([
+            'message' => 'Password updated successfully',
+        ]);
+    } catch (Exception $e) {
+        DB::rollBack();
+        return response()->json([
+            'message' => 'Something went wrong',
+            'error'   => $e->getMessage(),
+        ], 500);
+    }
+}
 }

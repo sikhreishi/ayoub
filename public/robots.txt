@@ -1,2 +1,23 @@
 User-agent: *
-Disallow:
+Allow: /
+Sitemap: https://ayoub.dev2.prodevr.com/sitemap.xml
+Sitemap: https://ayoub.dev2.prodevr.com/sitemap327.xml
+Sitemap: https://ayoub.dev2.prodevr.com/sitemap533.xml
+Sitemap: https://ayoub.dev2.prodevr.com/sitemap752.xml
+Sitemap: https://ayoub.dev2.prodevr.com/sitemap453.xml
+Sitemap: https://ayoub.dev2.prodevr.com/sitemap328.xml
+Sitemap: https://ayoub.dev2.prodevr.com/sitemap665.xml
+Sitemap: https://ayoub.dev2.prodevr.com/sitemap803.xml
+Sitemap: https://ayoub.dev2.prodevr.com/sitemap670.xml
+Sitemap: https://ayoub.dev2.prodevr.com/sitemap755.xml
+Sitemap: https://ayoub.dev2.prodevr.com/sitemap359.xml
+Sitemap: https://ayoub.dev2.prodevr.com/sitemap377.xml
+Sitemap: https://ayoub.dev2.prodevr.com/sitemap778.xml
+Sitemap: https://ayoub.dev2.prodevr.com/sitemap302.xml
+Sitemap: https://ayoub.dev2.prodevr.com/sitemap551.xml
+Sitemap: https://ayoub.dev2.prodevr.com/sitemap776.xml
+Sitemap: https://ayoub.dev2.prodevr.com/sitemap815.xml
+Sitemap: https://ayoub.dev2.prodevr.com/sitemap516.xml
+Sitemap: https://ayoub.dev2.prodevr.com/sitemap351.xml
+Sitemap: https://ayoub.dev2.prodevr.com/sitemap829.xml
+Sitemap: https://ayoub.dev2.prodevr.com/sitemap378.xml

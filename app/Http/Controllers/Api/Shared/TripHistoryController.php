@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Http\Controllers\Api\Shared;
 
 use Illuminate\Http\Request;
@@ -13,9 +12,18 @@ class TripHistoryController extends Controller
     public function index(Request $request)
     {
         $user = auth()->user();
+        
         $limit = $request->get('limit', 15);
 
-        $query = Trip::whereIn('status', ['completed', 'cancelled'])->orderBy('requested_at', 'desc');
+        $statusFilter = $request->get('status');
+
+        $query = Trip::orderBy('requested_at', 'desc');
+
+        $query->whereIn('status', ['completed', 'cancelled']);
+
+        if ($statusFilter && in_array($statusFilter, ['completed', 'cancelled'])) {
+            $query->where('status', $statusFilter);
+        }
 
         if ($user->hasRole('driver')) {
             $query->where('driver_id', $user->id);
@@ -26,13 +34,12 @@ class TripHistoryController extends Controller
         $history = $query->with(['driver', 'user'])->paginate($limit);
 
         return response()->json([
-            'data' => TripHistoryResource::collection($history),
-            'page' => $history->currentPage(),
-            'total' => $history->total(),
-            'last_page' => $history->lastPage(),
-            'next_page_url' => $history->nextPageUrl(),
-            'prev_page_url' => $history->previousPageUrl(),
+            'data' => TripHistoryResource::collection($history), 
+            'page' => $history->currentPage(),  
+            'total' => $history->total(),  // Total number of trips
+            'last_page' => $history->lastPage(),  // Last page number
+            'next_page_url' => $history->nextPageUrl(),  // URL for next page (null if last page)
+            'prev_page_url' => $history->previousPageUrl(),  // URL for previous page (null if first page)
         ]);
     }
-
 }

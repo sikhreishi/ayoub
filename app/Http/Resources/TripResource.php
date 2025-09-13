@@ -30,6 +30,8 @@ class TripResource extends JsonResource
             'longitude' => $this->dropoff_lng,
             'address' => $this->dropoff_name,
         ],
+        'driver_accept_lat' => $this->driver_accept_lat,
+        'driver_accept_lng' => $this->driver_accept_lng,
         'status' => $this->status,
         'estimated_fare' => $this->estimated_fare,
         'final_fare' => $this->final_fare,

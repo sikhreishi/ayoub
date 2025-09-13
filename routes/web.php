@@ -3,6 +3,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\Trips\TripController;
 use App\Http\Controllers\Admin\Vehicles\VehicleTypesController;
 use App\Http\Controllers\Admin\Wallet\AdminWalletCodeController;
+use App\Http\Controllers\Admin\Language\LanguageController;
+
 use App\Models\Invoice;
 use App\Events\PaymentCompleted;
 use App\Http\Controllers\Admin\Currency\{
@@ -17,6 +19,8 @@ use App\Http\Controllers\Admin\Profile\{
     ProfileController,
     DriverProfileController,
     DriverVehicleController,
+    WalletController
+
 };
 use App\Http\Controllers\Admin\Users\{
     CouponController,
@@ -46,7 +50,7 @@ use App\Http\Controllers\Admin\Tickets\{
 };
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
 
 Route::get('/test-roles', function () {
@@ -63,7 +67,7 @@ Route::get('/test-roles', function () {
     }
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware('auth','language')->group(function () {
 
     Route::get('countries/{country}/cities', [CitiesController::class, 'getCities'])->name('countries.cities');
     Route::get('/profile/{userId}/addresses', [ProfileController::class, 'getUserAddresses'])->name('profile.getAddresses');
@@ -296,16 +300,22 @@ Route::middleware('auth')->group(function () {
         Route::delete('/{id}', [AdminWalletCodeController::class, 'destroy'])->name('destroy')->middleware('permission:manage_wallet_codes');
         Route::get('/export', [AdminWalletCodeController::class, 'export'])->name('export')->middleware('permission:manage_wallet_codes');
     });
+
+      Route::prefix('dashboard/admin/profile/wallets/show')->name('admin.profile.wallets.')->group(function () {
+        Route::get('/{userId}', [WalletController::class, 'show'])->name('show')->middleware('permission:view_user_wallet');
+        Route::get('/{userId}/data', [WalletController::class, 'getWalletTransactions'])->name('transactions.data')->middleware('permission:view_user_wallet');
+      });
 });
 
 Route::put("/reade-notification", [NotificationController::class, 'readNotficion']);
 Route::get('/notifications/paginated', [NotificationController::class, 'getPaginatedNotifications']);
 Route::put('/update-device-token', [FcmTokenController::class, "store"]);
-Route::post('/set-lang', function (\Illuminate\Http\Request $request) {
-    session(['notificationLang' => $request->lang]);
-    app()->setLocale($request->lang);
-    return response()->json(['status' => 'ok']);
-});
+// Route::post('/set-lang', function (\Illuminate\Http\Request $request) {
+//     session(['lang' => $request->lang]);
+//     app()->setLocale($request->lang);
+//     return response()->json(['status' => 'ok']);
+// });
+Route::post('/set-lang', [LanguageController::class, 'switchLang']);
 
 require __DIR__ . '/auth.php';
 

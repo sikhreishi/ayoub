@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use \App\Models\Trip;
 
 class WalletTransaction extends Model
 {
@@ -15,6 +16,8 @@ class WalletTransaction extends Model
         'transaction_type',
         'reference_type',
         'reference_id',
+        'trip_id',
+        'payment_transaction_id',
         'description'
     ];
 
@@ -28,4 +31,10 @@ class WalletTransaction extends Model
     {
         return $this->belongsTo(Wallet::class);
     }
+
+    public function trip()
+    {
+        return $this->belongsTo(Trip::class, 'trip_id');
+    }
+
 }

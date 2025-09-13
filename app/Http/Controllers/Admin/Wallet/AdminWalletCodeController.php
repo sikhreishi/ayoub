@@ -5,18 +5,29 @@ namespace App\Http\Controllers\Admin\Wallet;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\WalletCode;
+use App\Models\Currency;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Log;
 use App\Services\AudiLogsService;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Illuminate\Support\Facades\Response;
+use App\Services\Currency\CurrencyService;
 
 class AdminWalletCodeController extends Controller
 {
+  
+    protected CurrencyService $currencyService;
+
+    public function __construct(CurrencyService $currencyService)
+    {
+        $this->currencyService = $currencyService;
+    }
+
     public function index()
     {
-        return view('admin.wallet-codes.index');
+        $currencies = Currency::all();
+        return view('admin.wallet-codes.index',compact('currencies'));
     }
 
     public function getCodesData(Request $request)
@@ -65,16 +76,21 @@ class AdminWalletCodeController extends Controller
     {
         try {
             $request->validate([
+                'currency' => 'required|in:USD,JOD,SYP',
                 'balance' => 'required|numeric|min:0.01|max:9999999.99',
                 'quantity' => 'required|integer|min:1|max:100'
             ]);
 
+            $usdBalance = $this->currencyService->convertToUSD(
+                (float) $request->balance,
+                $request->currency
+            );
             $generatedCodes = [];
 
             for ($i = 0; $i < $request->quantity; $i++) {
                 $code = WalletCode::create([
                     'code' => WalletCode::generateUniqueCode(),
-                    'balance' => $request->balance,
+                    'balance' => $usdBalance,
                     'generated_by' => auth()->id()
                 ]);
 
@@ -83,7 +99,7 @@ class AdminWalletCodeController extends Controller
 
             AudiLogsService::storeLog('create', 'wallet_codes', null, null, [
                 'quantity' => $request->quantity,
-                'balance' => $request->balance,
+                'balance' => $usdBalance,
                 'generated_by' => auth()->id()
             ]);
 

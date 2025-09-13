@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-bs-theme="blue-theme">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}" data-bs-theme="blue-theme">
 
 <head>
     <meta charset="utf-8">
@@ -58,7 +58,7 @@
     @include('layouts.sidebar')
     @include('layouts.switcher')
     @php
-        $lang = session('notificationLang', 'ar');
+        $lang = session('lang', 'ar');
     @endphp
     <x-confirm-delete-modal modalId="confirmDeleteModal" message="Are you sure you want to delete this item?" />
 

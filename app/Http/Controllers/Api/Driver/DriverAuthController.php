@@ -22,6 +22,21 @@ class DriverAuthController extends AuthBaseController
         $this->authService = $authService;
     }
 
+    public function getCarType()
+    {
+        $types = VehicleType::where('is_active', true)
+            ->orderBy('name')
+            ->get(['id', 'name', 'icon_url'])
+            ->map(fn ($t) => [
+                'id'       => $t->id,
+                'name'     => $t->name,
+                'icon_url' => $t->icon_url ? asset($t->icon_url) : null,
+            ])
+            ->values();
+
+        return response()->json($types);
+    }
+
     public function register(DriverRegisterRequest $request)
     {
         try {
@@ -177,6 +192,7 @@ class DriverAuthController extends AuthBaseController
                 'message' => 'Login successful.',
                 'user' => $user,
                 'token' => $token,
+                'avatar' => $user->avatar ? asset('storage/' . $user->avatar) : null,
                 'is_driver_verified' => $is_driver_verified,
                 'registration_complete' => $registration_complete
             ]);

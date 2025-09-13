@@ -21,7 +21,11 @@ use App\Http\Resources\TripResource;
 use App\Models\Wallet;
 use Illuminate\Support\Facades\DB;
 use App\Models\TripHistory;
-
+use App\Models\Coupon;
+use Illuminate\Support\Facades\Auth;
+use App\Services\Firebase\FirebaseInstantNotificationService;
+use App\Http\Requests\Api\CancelTripRequest;
+use App\Models\CancelReason;
 
 class UserTripController extends Controller
 {
@@ -29,12 +33,16 @@ class UserTripController extends Controller
     protected $distanceService;
     protected $firebase;
     protected $tripCostService;
-    public function __construct(GeohashService $geohashService, DistanceService $distanceService, FirebaseService $firebaseService)
+    protected $FirebaseInstantNotificationService;
+
+    public function __construct(GeohashService $geohashService, DistanceService $distanceService, FirebaseService $firebaseService,FirebaseInstantNotificationService $firebaseInstantNotificationService)
     {
         $this->geohashService = $geohashService;
         $this->distanceService = $distanceService;
         $this->firebase = $firebaseService;
         $this->tripCostService = new TripCostService();
+        $this->FirebaseInstantNotificationService = $firebaseInstantNotificationService;
+
     }
 
 
@@ -46,7 +54,8 @@ class UserTripController extends Controller
             'start_longitude' => 'required|numeric|between:-180,180',
             'end_latitude' => 'required|numeric|between:-90,90',
             'end_longitude' => 'required|numeric|between:-180,180',
-            'promo_code' => 'nullable|string|in:DISCOUNT10,DISCOUNT20',
+            // 'promo_code' => 'nullable|string|in:DISCOUNT10,DISCOUNT20',
+            'promo_code' => 'nullable|string',
             'ETA' => 'nullable|integer|min:1',
             'distance_km' => 'nullable|numeric|min:0',
         ]);
@@ -93,22 +102,46 @@ class UserTripController extends Controller
                 $perKmRate = $isNightTime ? $type->night_per_km_rate : $type->day_per_km_rate;
                 $perMinuteRate = $isNightTime ? $type->night_per_minute_rate : $type->day_per_minute_rate;
 
-                $promoCodeDiscount = 0;
+                // $promoCodeDiscount = 0;
                 
-                if ($request->promo_code && $request->promo_code === "DISCOUNT10") {
-                    $promoCodeDiscount = 10;
-                }
+                // if ($request->promo_code && $request->promo_code === "DISCOUNT10") {
+                //     $promoCodeDiscount = 10;
+                // }
 
                 $ETA = $request->ETA ?? 10; // Default to 10 minutes if no ETA is provided
     
-                $totalBeforeDiscount = $type->start_fare + ($distance * $perKmRate) + ($ETA * $perMinuteRate);
-                $total = $totalBeforeDiscount - ($totalBeforeDiscount * $promoCodeDiscount) / 100;
+                // $totalBeforeDiscount = $type->start_fare + ($distance * $perKmRate) + ($ETA * $perMinuteRate);
+                // $total = $totalBeforeDiscount - ($totalBeforeDiscount * $promoCodeDiscount) / 100;
 
+                $promoApplied = false;
+                $couponCode   = $request->promo_code;
+
+                $totalBeforeDiscount = $type->start_fare + ($distance * $perKmRate) + ($ETA * $perMinuteRate);
+
+                $discountedTotal = $totalBeforeDiscount;
+
+                if (!empty($couponCode)) {
+                    $coupon = Coupon::where('code', $couponCode)->first();
+                    $user   = $request->user() ?? Auth::user(); 
+
+                    if ($coupon && $user && $coupon->isValidFor($user, $totalBeforeDiscount)) {
+                        $discountedTotal = $coupon->applyDiscount($totalBeforeDiscount);
+                        $promoApplied = true;
+                    }
+                }
+
+                $total = $discountedTotal;
+                
                 return [
-                    'id' => $type->id,
-                    'name' => $type->name,
+                    'id'     => $type->id,
+                    'name'   => $type->name,
                     'avatar' => $type->icon_url,
-                    'price' => $total,
+                    'price'  => $total,
+                    'meta'   => [
+                        'base_price'     => $totalBeforeDiscount,
+                        'coupon_applied' => $promoApplied,
+                        'coupon_code'    => $couponCode ?? null,
+                    ],
                 ];
             });
 
@@ -177,7 +210,7 @@ class UserTripController extends Controller
                     $filteredDrivers[] = $driver;
                 }
             }
-
+                
             $tripId = $this->createTrip($userLat, $userLong, $endLat, $endLong, $vehicleTypeId);
             $this->firebase->storeTripInFirebase($tripId, 'pending');
 
@@ -197,8 +230,10 @@ class UserTripController extends Controller
     }
 
 
-    public function cancelTrip(Request $request, $tripId)
+    public function cancelTrip(CancelTripRequest $request, $tripId)
     {
+
+
         DB::beginTransaction();
         try {
             $trip = Trip::findOrFail($tripId);
@@ -211,8 +246,12 @@ class UserTripController extends Controller
                 return response()->json(['message' => 'Trip cannot be cancelled at this stage.'], 400);
             }
 
+
+            $oldStatus = $trip->status;
             $trip->status = 'cancelled';
             $trip->cancelled_by = 'user';
+            $trip->cancel_reason_id = $request->cancel_reason_id;
+            $trip->cancel_reason_note = $request->cancel_reason_note;
             $trip->cancelled_at = now();
             $trip->save();
 
@@ -221,13 +260,22 @@ class UserTripController extends Controller
                 'user_id' => auth()->user()->id,
             ]);
 
-            $driverAvailability = DriverAvailability::where('driver_id', $trip->driver_id)->first();
-            if ($driverAvailability) {
-                $driverAvailability->is_available = true;
-                $driverAvailability->save();
+            if ($oldStatus === 'accepted' && $trip->driver_id) {
+                $driverAvailability = DriverAvailability::where('driver_id', $trip->driver_id)->first();
+                if ($driverAvailability) {
+                    $driverAvailability->is_available = true;
+                    $driverAvailability->save();
+                }
+
+                // NOTIFICATION: Send cancellation to driver
+                $this->FirebaseInstantNotificationService->sendTripCancelledByUser(
+                    $trip->driver_id,
+                    $trip->id,
+                    auth()->user()->name
+                );
             }
 
-            $this->firebase->storeTripInFirebase($trip->id, 'cancelled');
+                $this->firebase->storeTripInFirebase($trip->id, 'cancelled');
 
             DB::commit();
 
@@ -364,36 +412,21 @@ class UserTripController extends Controller
         return $trip->id;
     }
 
-    private function sendDriverNotification($driver, $tripId, $pickupName, $dropoffName)
+     private function sendDriverNotification($driver, $tripId, $pickupName, $dropoffName)
     {
         try {
-            // Fetch the latest device token from DB
-            $deviceToken = \App\Models\DeviceToken::where('user_id', $driver['driver_id'])->latest()->first();
+            // Use the new notification service
+            $this->FirebaseInstantNotificationService->sendTripRequestToDriver(
+                $driver['driver_id'],
+                $tripId,
+                $pickupName,
+                $dropoffName
+            );
 
-            // If no token, skip this driver
-            if (!$deviceToken) {
-                \Log::warning("No device token found for driver: {$driver['driver_id']}, skipping notification.");
-                return;
-            }
-
-            // Prepare notification data
-            $message = CloudMessage::new()
-                ->withTarget('token', $deviceToken->token)
-                ->withData(
-                    [
-                        'trip_id' => $tripId,
-                        'user_lat' => $driver['lat'],
-                        'user_long' => $driver['long'],
-                        'pickup_name' => $pickupName,
-                        'dropoff_name' => $dropoffName,
-                        'start_time' => now()->toDateTimeString(),
-                    ]
-                );
         } catch (\Exception $e) {
             \Log::error("Error sending Firebase notification to driver: " . $e->getMessage());
         }
     }
-
 
 
     protected function calculateGeohashDistance($userGeoHash, $driverGeoHash)

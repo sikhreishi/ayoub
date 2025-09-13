@@ -1,26 +1,15 @@
-@push('plugin-styles')
-
-@endpush
-
-@push('plugin-scripts')
-
-@endpush
-
-
 @extends('layouts.app')
-
-
 
 @section('content')
 <div class="container-fluid dashboard-stats">
     <div class="row g-4 mb-4">
-        <div class="col-12  col-lg-4">
+        <div class="col-12 col-lg-4">
             <div class="stat-card stat-users">
                 <div class="stat-accent"></div>
-                <div class="d-flex align-items-center">
+                <div class="d-flex align-items-center {{ app()->getLocale() == 'ar' ? 'flex-row-reverse' : '' }}">
                     <div class="stat-icon text-primary"><i class="bi bi-people"></i></div>
-                    <div class="ms-3">
-                        <div class="stat-label">Total Users</div>
+                    <div class="{{ app()->getLocale() == 'ar' ? 'me-3 text-end' : 'ms-3' }}">
+                        <div class="stat-label">{{ __('dashboard.stats.total_users') }}</div>
                         <div class="stat-value">{{ number_format($totalUsers) }}</div>
                     </div>
                 </div>
@@ -29,37 +18,37 @@
         <div class="col-12 col-lg-4">
             <div class="stat-card stat-drivers">
                 <div class="stat-accent"></div>
-                <div class="d-flex align-items-center">
+                <div class="d-flex align-items-center {{ app()->getLocale() == 'ar' ? 'flex-row-reverse' : '' }}">
                     <div class="stat-icon text-success"><i class="bi bi-person-badge"></i></div>
-                    <div class="ms-3">
-                        <div class="stat-label">Total Drivers</div>
+                    <div class="{{ app()->getLocale() == 'ar' ? 'me-3 text-end' : 'ms-3' }}">
+                        <div class="stat-label">{{ __('dashboard.stats.total_drivers') }}</div>
                         <div class="stat-value">{{ number_format($totalDrivers) }}</div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-12   col-lg-4">
+        <div class="col-12 col-lg-4">
             <div class="stat-card stat-trips">
                 <div class="stat-accent"></div>
-                <div class="d-flex align-items-center">
+                <div class="d-flex align-items-center {{ app()->getLocale() == 'ar' ? 'flex-row-reverse' : '' }}">
                     <div class="stat-icon text-warning"><i class="bi bi-car-front"></i></div>
-                    <div class="ms-3">
-                        <div class="stat-label">Total Trips</div>
+                    <div class="{{ app()->getLocale() == 'ar' ? 'me-3 text-end' : 'ms-3' }}">
+                        <div class="stat-label">{{ __('dashboard.stats.total_trips') }}</div>
                         <div class="stat-value">{{ number_format($totalTrips) }}</div>
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
+
     <div class="row g-4 mb-4">
         <div class="col-12 col-sm-4">
             <div class="stat-card stat-completed">
                 <div class="stat-accent"></div>
-                <div class="d-flex align-items-center">
+                <div class="d-flex align-items-center {{ app()->getLocale() == 'ar' ? 'flex-row-reverse' : '' }}">
                     <div class="stat-icon text-success"><i class="bi bi-check-circle"></i></div>
-                    <div class="ms-3">
-                        <div class="stat-label">Completed Trips</div>
+                    <div class="{{ app()->getLocale() == 'ar' ? 'me-3 text-end' : 'ms-3' }}">
+                        <div class="stat-label">{{ __('dashboard.stats.completed_trips') }}</div>
                         <div class="stat-value">{{ number_format($completedTrips) }}</div>
                     </div>
                 </div>
@@ -68,10 +57,10 @@
         <div class="col-12 col-sm-4">
             <div class="stat-card stat-cancelled">
                 <div class="stat-accent"></div>
-                <div class="d-flex align-items-center">
+                <div class="d-flex align-items-center {{ app()->getLocale() == 'ar' ? 'flex-row-reverse' : '' }}">
                     <div class="stat-icon text-danger"><i class="bi bi-x-circle"></i></div>
-                    <div class="ms-3">
-                        <div class="stat-label">Cancelled Trips</div>
+                    <div class="{{ app()->getLocale() == 'ar' ? 'me-3 text-end' : 'ms-3' }}">
+                        <div class="stat-label">{{ __('dashboard.stats.cancelled_trips') }}</div>
                         <div class="stat-value">{{ number_format($cancelledTrips) }}</div>
                     </div>
                 </div>
@@ -80,10 +69,10 @@
         <div class="col-12 col-sm-4">
             <div class="stat-card stat-ongoing">
                 <div class="stat-accent"></div>
-                <div class="d-flex align-items-center">
+                <div class="d-flex align-items-center {{ app()->getLocale() == 'ar' ? 'flex-row-reverse' : '' }}">
                     <div class="stat-icon text-warning"><i class="bi bi-clock-history"></i></div>
-                    <div class="ms-3">
-                        <div class="stat-label">Ongoing Trips</div>
+                    <div class="{{ app()->getLocale() == 'ar' ? 'me-3 text-end' : 'ms-3' }}">
+                        <div class="stat-label">{{ __('dashboard.stats.ongoing_trips') }}</div>
                         <div class="stat-value">{{ number_format($ongoingTrips) }}</div>
                     </div>
                 </div>
@@ -91,64 +80,50 @@
         </div>
     </div>
 
+    <!-- Chart Section -->
     <div class="row g-4 mb-4">
         <div class="col-12 col-lg-8 mx-auto">
             <div class="card shadow-lg border-0 chart-card">
-                <div class="card-header bg-gradient text-white text-center py-3">
-                    <h5 class="card-title mb-0">
-                        <i class="bi bi-pie-chart-fill me-2"></i>
-                        Trips Distribution Overview
-                    </h5>
+                <div class="card-header bg-gradient text-white text-center">
+                    <h5 class="mb-0">{{ __('dashboard.stats.trips_distribution') }}</h5>
                 </div>
                 <div class="card-body p-4">
-                    <div class="row align-items-center">
-                        <div class="col-12 col-md-7">
-                            <div class="chart-container position-relative">
-                                <canvas id="tripsChart" width="350" height="350"></canvas>
+                    <div class="chart-container">
+                        <canvas id="tripsChart"></canvas>
+                    </div>
+                    <div class="mt-4 d-flex justify-content-around chart-stats">
+                        <div class="stat-item d-flex align-items-center">
+                            <div class="stat-color completed me-2"></div>
+                            <div>
+                                <div class="stat-label">{{ __('dashboard.stats.completed') }}</div>
+                                <div class="stat-number">{{ number_format($completedTrips) }}</div>
                             </div>
                         </div>
-                        <div class="col-12 col-md-5">
-                            <div class="chart-stats mt-3 mt-md-0">
-                                <div class="stat-item mb-3">
-                                    <div class="d-flex align-items-center">
-                                        <div class="stat-color completed me-3"></div>
-                                        <div>
-                                            <div class="stat-label">Completed</div>
-                                            <div class="stat-number">{{ number_format($completedTrips) }}</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="stat-item mb-3">
-                                    <div class="d-flex align-items-center">
-                                        <div class="stat-color cancelled me-3"></div>
-                                        <div>
-                                            <div class="stat-label">Cancelled</div>
-                                            <div class="stat-number">{{ number_format($cancelledTrips) }}</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="stat-item mb-3">
-                                    <div class="d-flex align-items-center">
-                                        <div class="stat-color ongoing me-3"></div>
-                                        <div>
-                                            <div class="stat-label">Ongoing</div>
-                                            <div class="stat-number">{{ number_format($ongoingTrips) }}</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <hr class="my-3">
-                                <div class="total-trips text-center">
-                                    <div class="total-label">Total Trips</div>
-                                    <div class="total-number">{{ number_format($completedTrips + $cancelledTrips + $ongoingTrips) }}</div>
-                                </div>
+                        <div class="stat-item d-flex align-items-center">
+                            <div class="stat-color cancelled me-2"></div>
+                            <div>
+                                <div class="stat-label">{{ __('dashboard.stats.cancelled') }}</div>
+                                <div class="stat-number">{{ number_format($cancelledTrips) }}</div>
                             </div>
                         </div>
+                        <div class="stat-item d-flex align-items-center">
+                            <div class="stat-color ongoing me-2"></div>
+                            <div>
+                                <div class="stat-label">{{ __('dashboard.stats.ongoing') }}</div>
+                                <div class="stat-number">{{ number_format($ongoingTrips) }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="total-trips mt-4 text-center">
+                        <div class="total-label">{{ __('dashboard.stats.total_trips') }}</div>
+                        <div class="total-number">{{ number_format($totalTrips) }}</div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 @push('plugin-styles')
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <style>

@@ -2,7 +2,10 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\Wallet\DriverWalletController;
+use App\Http\Controllers\Api\Wallet\{
+    DriverWalletController,
+    UserWalletController
+};
 use App\Http\Controllers\Notification\{
     FcmTokenController, 
     NotificationController
@@ -12,11 +15,13 @@ use App\Http\Controllers\Api\Shared\{
     TripHistoryController,
     TicketController,
     TripReviewController,
+    CancelReasonController
 };
 use App\Http\Controllers\Api\User\{
     InviteController,
     CouponsController
 };
+
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -25,6 +30,8 @@ Route::get('/user', function (Request $request) {
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/get-all-notification/page/{page}', [NotificationController::class, 'getAllNotification']);
+    Route::patch('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
+    Route::patch('/notifications/read-all',    [NotificationController::class, 'markAllAsRead']);
     Route::put('/update-device-token', [FcmTokenController::class, "store"]);
     Route::post('/tokens/create', function (Request $request) {
         $token = $request->user()->createToken($request->token_name);
@@ -44,6 +51,8 @@ Route::prefix('shared')->middleware('auth:sanctum')->group(function () {
     Route::post('/contact-us', [ContactUsController::class, 'store']);
     Route::get('/trips/{trip}/reviews', [TripReviewController::class, 'show']);
     Route::post('/trips/{trip}/reviews', [TripReviewController::class, 'store']);
+    Route::get('/cancel-reasons', [CancelReasonController::class, 'index']);
+
 });
 
 Route::post('/broadcast-notification', [NotificationController::class, 'sendToAll']);
@@ -73,3 +82,10 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 });
 
+
+Route::middleware('auth:sanctum')->prefix('user')->group(function () {
+
+    Route::get('/wallet', [UserWalletController::class, 'show']);
+     Route::get('wallet/transactions', [UserWalletController::class, 'transactions']);
+
+});

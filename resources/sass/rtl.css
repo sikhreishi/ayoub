@@ -1,0 +1,185 @@
+/* RTL Layout Support */
+[dir="rtl"] body {
+    direction: rtl;
+    text-align: right;
+}
+
+/* Sidebar RTL Styles */
+[dir="rtl"] .sidebar-wrapper {
+    left: auto;
+    right: 0;
+    direction: rtl;
+    text-align: right;
+}
+
+[dir="rtl"] .sidebar-header .logo-icon {
+    margin-right: 0;
+    margin-left: 10px;
+}
+
+[dir="rtl"] .sidebar-close {
+    left: 15px;
+    right: auto;
+}
+
+[dir="rtl"] .metismenu .has-arrow::after {
+    right: auto;
+    left: 1em;
+    transform: rotate(180deg) translateY(50%);
+}
+
+[dir="rtl"] .sidebar-nav .metismenu .mm-collapse {
+    padding-left: 0;
+    padding-right: 2rem;
+}
+
+[dir="rtl"] .metismenu .mm-collapse:not(.mm-show) {
+    padding-right: 0;
+}
+
+[dir="rtl"] .material-icons-outlined {
+    transform: none;
+}
+
+/* Header RTL Styles */
+[dir="rtl"] .top-header .navbar {
+    direction: rtl;
+}
+
+[dir="rtl"] .search-bar .position-relative .material-icons-outlined {
+    right: auto;
+    left: 10px;
+}
+
+[dir="rtl"] .nav-right-links {
+    direction: rtl;
+}
+
+[dir="rtl"] .dropdown-menu {
+    text-align: right;
+}
+
+[dir="rtl"] .dropdown-menu-end {
+    right: auto !important;
+    left: 0 !important;
+}
+
+/* Form RTL Styles */
+[dir="rtl"] .form-check {
+    padding-right: 1.5em;
+    padding-left: 0;
+}
+
+[dir="rtl"] .form-check-input {
+    margin-right: 0;
+    margin-left: -1.5em;
+}
+
+[dir="rtl"] .form-select {
+    padding: 0.375rem 0.75rem 0.375rem 2.25rem;
+    background-position: left 0.75rem center;
+}
+
+/* Table RTL Styles */
+[dir="rtl"] table th,
+[dir="rtl"] table td {
+    text-align: right;
+}
+
+/* Button RTL Styles */
+[dir="rtl"] .btn-group>.btn:not(:first-child),
+[dir="rtl"] .btn-group>.btn-group:not(:first-child) {
+    margin-left: 0;
+    margin-right: -1px;
+}
+
+[dir="rtl"] .btn-group>.btn:not(:last-child):not(.dropdown-toggle),
+[dir="rtl"] .btn-group>.btn-group:not(:last-child)>.btn {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-top-right-radius: 0.375rem;
+    border-bottom-right-radius: 0.375rem;
+}
+
+[dir="rtl"] .btn-group>.btn:nth-child(n+3),
+[dir="rtl"] .btn-group> :not(.btn-check)+.btn,
+[dir="rtl"] .btn-group>.btn-group:not(:first-child)>.btn {
+    border-top-left-radius: 0.375rem;
+    border-bottom-left-radius: 0.375rem;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+/* Utilities */
+[dir="rtl"] .ms-1 {
+    margin-right: 0.25rem !important;
+    margin-left: 0 !important;
+}
+
+[dir="rtl"] .ms-2 {
+    margin-right: 0.5rem !important;
+    margin-left: 0 !important;
+}
+
+[dir="rtl"] .ms-3 {
+    margin-right: 1rem !important;
+    margin-left: 0 !important;
+}
+
+[dir="rtl"] .me-1 {
+    margin-left: 0.25rem !important;
+    margin-right: 0 !important;
+}
+
+[dir="rtl"] .me-2 {
+    margin-left: 0.5rem !important;
+    margin-right: 0 !important;
+}
+
+[dir="rtl"] .me-3 {
+    margin-left: 1rem !important;
+    margin-right: 0 !important;
+}
+
+[dir="rtl"] .ps-1 {
+    padding-right: 0.25rem !important;
+    padding-left: 0 !important;
+}
+
+[dir="rtl"] .ps-2 {
+    padding-right: 0.5rem !important;
+    padding-left: 0 !important;
+}
+
+[dir="rtl"] .pe-1 {
+    padding-left: 0.25rem !important;
+    padding-right: 0 !important;
+}
+
+[dir="rtl"] .pe-2 {
+    padding-left: 0.5rem !important;
+    padding-right: 0 !important;
+}
+
+[dir="rtl"] .text-start {
+    text-align: right !important;
+}
+
+[dir="rtl"] .text-end {
+    text-align: left !important;
+}
+
+/* Fix for dropdown menus */
+[dir="rtl"] .dropdown-menu-start {
+    --bs-position: end;
+}
+
+[dir="rtl"] .dropdown-menu-end {
+    --bs-position: start;
+}
+
+/* Fix for icons in buttons */
+[dir="rtl"] .btn i.material-icons-outlined {
+    margin-right: 0;
+    margin-left: 0.5rem;
+}

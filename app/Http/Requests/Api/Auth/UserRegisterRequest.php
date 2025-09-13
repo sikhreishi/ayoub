@@ -24,6 +24,7 @@ class UserRegisterRequest extends ApiFormRequest
             'street' => 'nullable|string|max:255',
             'city_id' => 'nullable|exists:cities,id',
             'district_id' => 'nullable|exists:districts,id',
+            'country_id' => 'nullable|exists:countries,id',
             'token' => 'required|string',
             'platform' => 'required|string',
         ];

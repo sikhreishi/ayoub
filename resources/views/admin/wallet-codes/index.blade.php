@@ -65,6 +65,20 @@
                 </div>
                 <div class="modal-body">
                     <form id="generateCodeForm">
+                        <div class="d-flex justify-content-end">
+                            <div class="btn-group mb-3" role="group" aria-label="Currency selection">
+                            @foreach($currencies as $currency)
+                                <input type="radio" class="btn-check" name="currency"
+                                    id="currency{{ $currency->id }}"
+                                    value="{{ $currency->code }}"
+                                    autocomplete="off"
+                                    {{ $currency->code === 'USD' ? 'checked' : '' }} required>
+                                <label class="btn btn-outline-primary" for="currency{{ $currency->id }}">
+                                {{ $currency->code }}
+                                </label>
+                            @endforeach
+                            </div>
+                        </div>
                         <div class="mb-3">
                             <label for="balance" class="form-label">Balance Amount ($)</label>
                             <input type="number" class="form-control" id="balance" step="0.01" min="0.01"
@@ -139,10 +153,11 @@
 
             $('#generateCodeForm').submit(function(e) {
                 e.preventDefault();
-
+                  const currency = $('input[name="currency"]:checked').val() || 'USD';
                 const formData = {
                     balance: $('#balance').val(),
-                    quantity: $('#quantity').val()
+                    quantity: $('#quantity').val(),
+                    currency: currency
                 };
 
                 $.ajax({

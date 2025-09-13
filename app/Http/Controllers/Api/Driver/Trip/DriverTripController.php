@@ -14,37 +14,43 @@ use App\Models\Wallet;
 use Illuminate\Support\Facades\DB;
 use App\Models\TripHistory;
 use App\Services\TripCostService;
+use App\Services\Firebase\FirebaseInstantNotificationService;
+use App\Models\User;
 
 class DriverTripController extends Controller
 {
     protected $firebase;
     protected $distanceService;
     protected $tripCostService;
+    protected $FirebaseInstantNotificationService;
 
-    public function __construct(FirebaseService $firebaseService, DistanceService $distanceService)
+    public function __construct(FirebaseService $firebaseService, DistanceService $distanceService,FirebaseInstantNotificationService $firebaseInstantNotificationService)
     {
         $this->distanceService = $distanceService;
         $this->firebase = $firebaseService;
         $this->tripCostService = new TripCostService();
+        $this->FirebaseInstantNotificationService = $firebaseInstantNotificationService;
+
     }
 
 
     public function acceptTrip(Request $request, $tripId)
     {
-        $validator = Validator::make($request->all(), []);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'message' => 'Validation failed',
-                'errors' => $validator->errors()
-            ], 422);
-        }
 
         try {
             $trip = Trip::findOrFail($tripId);
 
             if (!auth()->user()->hasRole('driver')) {
                 return response()->json(['message' => 'Unauthorized, not a driver.'], 403);
+            }
+     $user = auth()->user()->load('driverAvailability','driverProfile');
+
+            if (!$user->driverProfile || !$user->driverProfile->is_driver_verified) {
+                return response()->json(['message' => 'driver not verified'], 403);
+            }
+
+            if (!$user->driverAvailability || !$user->driverAvailability->is_available) {
+                return response()->json(['message' => 'driver not available'], 400);
             }
 
             $wallet = Wallet::where('user_id', auth()->user()->id)->first();
@@ -57,7 +63,7 @@ class DriverTripController extends Controller
             }
 
             $activeTrip = Trip::where('driver_id', auth()->user()->id)
-                ->whereIn('status', ['accepted', 'in-progress'])
+                ->whereIn('status', ['accepted', 'in_progress'])
                 ->first();
 
             if ($activeTrip) {
@@ -89,6 +95,24 @@ class DriverTripController extends Controller
             }
 
             $this->firebase->storeTripInFirebase($trip->id, 'accepted');
+
+                // NOTIFICATION: Send to driver (ALL devices)
+            $passenger = User::find($trip->user_id);
+            $this->FirebaseInstantNotificationService->sendTripAcceptedToDriver(
+                auth()->id(), // User ID instead of token
+                $trip->id, 
+                $passenger->name ?? 'Passenger'
+            );
+
+            // NOTIFICATION: Send to passenger (ALL devices)
+            $driver = auth()->user();
+            $vehicleInfo = $driver->vehicle ? $driver->vehicle->make . ' ' . $driver->vehicle->model : 'vehicle';
+            $this->FirebaseInstantNotificationService->sendTripAcceptedToPassenger(
+                $trip->user_id, // Passenger user ID
+                $trip->id, 
+                $driver->name, 
+                $vehicleInfo
+            );
 
             return response()->json([
                 'message' => 'Trip accepted successfully.',
@@ -135,6 +159,14 @@ class DriverTripController extends Controller
 
             $wallet->balance -= $tripCost;
             $wallet->save();
+            
+             // NOTIFICATION: Wallet deduction to driver (ALL devices)
+            $this->FirebaseInstantNotificationService->sendWalletUpdateNotification(
+                auth()->id(), // User ID instead of token
+                $tripCost, 
+                'deduction', 
+                $trip->id
+            );
 
             $trip->status = 'in_progress';
             $trip->started_at = Carbon::now();
@@ -146,6 +178,19 @@ class DriverTripController extends Controller
                 $driverAvailability->save();
             }
             $this->firebase->storeTripInFirebase($trip->id, 'in_progress');
+ // NOTIFICATION: Trip started to driver (ALL devices)
+            $this->FirebaseInstantNotificationService->sendTripStartedToDriver(
+                auth()->id(), // User ID instead of token
+                $trip->id, 
+                $tripCost
+            );
+
+            // NOTIFICATION: Trip started to passenger (ALL devices)
+            $this->FirebaseInstantNotificationService->sendTripStartedToPassenger(
+                $trip->user_id, // Passenger user ID
+                $trip->id, 
+                auth()->user()->name
+            );
 
             DB::commit();
 
@@ -191,6 +236,45 @@ class DriverTripController extends Controller
 
             $this->firebase->storeTripInFirebase($trip->id, 'cancelled');
 
+            // NOTIFICATION: Trip cancellation to driver (ALL devices)
+            $this->FirebaseInstantNotificationService->sendTripCancelledByDriver(
+                auth()->id(), // User ID instead of token
+                $trip->id, 
+                'You'
+            );
+
+            // NOTIFICATION: Trip cancellation to passenger (ALL devices)
+            $this->FirebaseInstantNotificationService->sendTripCancelledByDriver(
+                $trip->user_id, // Passenger user ID
+                $trip->id, 
+                'Driver'
+            );
+
+                 // NOTIFICATION: Refund if applicable
+            $wallet = Wallet::where('user_id', auth()->user()->id)->first();
+            $tripCost = $this->tripCostService->calculateTripCost($trip->vehicle_type_id, $trip->estimated_fare);
+            
+            // Check if deduction was made and refund if needed
+            $deductionTransaction = $wallet->transactions()
+                ->where('description', 'like', '%Trip start deduction for Trip ID: ' . $trip->id . '%')
+                ->first();
+            
+            if ($deductionTransaction) {
+                $wallet->balance += $tripCost;
+                $wallet->transactions()->create([
+                    'amount' => $tripCost,
+                    'transaction_type' => 'refund',
+                    'description' => 'Refund for cancelled Trip ID: ' . $trip->id,
+                ]);
+                $wallet->save();
+
+                // NOTIFICATION: Refund to driver (ALL devices)
+                $this->FirebaseInstantNotificationService->sendTripCancellationRefund(
+                    auth()->id(), // User ID instead of token
+                    $trip->id, 
+                    $tripCost
+                );
+            }
             DB::commit();
 
             return response()->json([
@@ -272,6 +356,24 @@ class DriverTripController extends Controller
             }
 
             $this->firebase->storeTripInFirebase($trip->id, 'completed');
+ // Calculate driver earnings (you might want to adjust this logic)
+            $driverEarnings = $finalFare * 0.8; // 80% to driver, 20% to platform
+
+            // NOTIFICATION: Trip completion to driver (ALL devices)
+            $this->FirebaseInstantNotificationService->sendTripCompletedToDriver(
+                auth()->id(), // User ID instead of token
+                $trip->id, 
+                $finalFare, 
+                $driverEarnings
+            );
+
+            // NOTIFICATION: Trip completion to passenger (ALL devices)
+            $this->FirebaseInstantNotificationService->sendTripCompletedToPassenger(
+                $trip->user_id, // Passenger user ID
+                $trip->id, 
+                $finalFare, 
+                auth()->user()->name
+            );
 
             DB::commit();
 

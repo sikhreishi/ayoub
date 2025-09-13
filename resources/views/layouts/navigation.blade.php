@@ -92,31 +92,27 @@
             <li class="nav-item d-lg-none mobile-search-btn">
                 <a class="nav-link" href="javascript:;"><i class="material-icons-outlined">search</i></a>
             </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle dropdown-toggle-nocaret" href="javascript:;" data-bs-toggle="dropdown">
-                    @php
-                        $lang = session('notificationLang', 'ar');
-                        $langCode = strtoupper($lang); // يخليها كابيتال
-                    @endphp
-                    <span class="fw-bold text-uppercase" style="width:22px; display:inline-block; text-align:center;">
-                        {{ $langCode }}
-                    </span>
-                </a>
-                <ul class="dropdown-menu dropdown-menu-end">
-                    <li>
-                        <a class="dropdown-item d-flex align-items-center py-2" href="#" onclick="setLang('ar'); return false;">
-                            <span class="fw-bold text-uppercase" style="width:20px; display:inline-block; text-align:center;">AR</span>
-                            <span class="ms-2">العربية</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item d-flex align-items-center py-2" href="#" onclick="setLang('en'); return false;">
-                            <span class="fw-bold text-uppercase" style="width:20px; display:inline-block; text-align:center;">EN</span>
-                            <span class="ms-2">English</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+        <span class="fw-bold text-uppercase" style="width:22px; display:inline-block; text-align:center;">
+            {{ strtoupper(session('lang', 'ar')) }}
+        </span>
+    </a>
+    <ul class="dropdown-menu {{ app()->getLocale() == 'ar' ? 'dropdown-menu-end' : '' }}">
+        <li>
+            <a class="dropdown-item" href="#" onclick="setLang('ar'); return false;">
+                <span class="fw-bold text-uppercase" style="width:20px; display:inline-block; text-align:center;">AR</span>
+                <span>العربية</span>
+            </a>
+        </li>
+        <li>
+            <a class="dropdown-item" href="#" onclick="setLang('en'); return false;">
+                <span class="fw-bold text-uppercase" style="width:20px; display:inline-block; text-align:center;">EN</span>
+                <span>English</span>
+            </a>
+        </li>
+    </ul>
+</li>
             
 
             <li class="nav-item dropdown">
@@ -179,7 +175,7 @@
                                         </div>
                                         <div class="flex-grow-1">
                                             @php
-                                                $lang = session('notificationLang' , 'ar');
+                                                $lang = session('lang' , 'ar');
                                                 $title = $lang == 'ar' ? $notification->title_ar : $notification->title_en;
                                                 $body = $lang == 'ar' ? $notification->body_ar : $notification->body_en;
                                             @endphp
@@ -258,18 +254,42 @@
     </nav>
 </header>
 <script>
-    function setLang(lang) {
-        localStorage.setItem('notificationLang', lang);
+      function setLang(lang) {
+        localStorage.setItem('lang', lang);
+        localStorage.setItem('dir', lang === 'ar' ? 'rtl' : 'ltr');
+
         $.ajax({
             url: '/set-lang',
             method: 'POST',
-            data: { lang: lang },
+            data: { 
+                lang: lang,
+                dir: lang === 'ar' ? 'rtl' : 'ltr'
+            },
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
             success: function() {
+                // Update the HTML direction attribute
+                document.documentElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+                document.documentElement.setAttribute('lang', lang);
+                document.body.className = document.body.className.replace(/\b(rtl|ltr)\b/g, '') + ' ' + (lang === 'ar' ? 'rtl' : 'ltr');
+                
+                // Reload the page to reflect the language change
                 location.reload();
+            },
+            error: function() {
+                alert('There was an error changing the language. Please try again.');
             }
         });
     }
+
+    // Set initial direction on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        const savedLang = localStorage.getItem('lang') || '{{ app()->getLocale() }}';
+        const savedDir = localStorage.getItem('dir') || (savedLang === 'ar' ? 'rtl' : 'ltr');
+        
+        document.documentElement.setAttribute('dir', savedDir);
+        document.documentElement.setAttribute('lang', savedLang);
+        document.body.className = document.body.className.replace(/\b(rtl|ltr)\b/g, '') + ' ' + savedDir;
+    });
 </script>

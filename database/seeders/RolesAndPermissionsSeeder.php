@@ -103,6 +103,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'export_data',
             'import_data',
             'manage_wallet_codes',
+            'view_user_wallet',
 
         ];
 

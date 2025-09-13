@@ -54,6 +54,11 @@ class User extends Authenticatable
         return $this->hasOne(DriverProfile::class);
     }
 
+    public function driverAvailability()
+    {
+        return $this->hasOne(DriverAvailability::class, 'driver_id');
+    }
+
     public function addresses()
     {
         return $this->hasMany(Address::class);
@@ -66,6 +71,11 @@ class User extends Authenticatable
     public function city()
     {
         return $this->belongsTo(City::class, 'city_id');
+    }
+
+    public function country()
+    {
+        return $this->belongsTo(Country::class, 'country_id');
     }
     public function trips()
     {

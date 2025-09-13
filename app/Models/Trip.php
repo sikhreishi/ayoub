@@ -38,6 +38,8 @@ class Trip extends Model
         'cancelled_at',
         'cancelled_by',
         'vehicle_type_id',
+        'cancel_reason_id',
+        'cancel_reason_note',
 
     ];
 
@@ -89,5 +91,8 @@ class Trip extends Model
         return $this->belongsTo(VehicleType::class); // Define the relationship
     }
 
-
+    public function cancelReason()
+    {
+        return $this->belongsTo(CancelReason::class, 'cancel_reason_id');
+    }
 }

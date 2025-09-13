@@ -44,12 +44,22 @@ class DriverProfileController extends Controller
         // If the driver is verified, initialize their record in Firebase
         if ($request->is_driver_verified) {
             $this->firebase->initializeDriverRecord($user->id);
+            if($user->is_online && !$user->trips()->where('status', ['accepted','in_progress'])->exists()){
+              $user->driverAvailability()->updateOrCreate(
+                  ['driver_id' => $user->id],
+                  ['is_available' => true]
+              );
+            }
         } else {
             // If the driver is unverified, delete their record from Firebase
             $this->firebase->deleteDriverRecord($user->id);
 
             $this->sendDriverUnverifiedNotification($user);
-
+             
+              $user->driverAvailability()->updateOrCreate(
+                  ['driver_id' => $user->id],
+                  ['is_available' => false]
+              );
         }
 
         // Log the update to the driver profile

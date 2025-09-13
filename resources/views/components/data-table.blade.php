@@ -4,7 +4,7 @@
   </div>
 
   <div class="card-body p-0">
-    <div class="table-responsive">
+    <div class="table-responsive" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
       <table id="{{ $tableId }}" class="table table-striped table-hover w-100 mb-0">
         <thead class="thead-dark">
           <tr>
@@ -17,11 +17,11 @@
     </div>
   </div>
 </div>
-
 @push('data-table-scripts')
 <script>
 $(document).ready(function () {
     const tableId = '#{{ $tableId }}';
+    const isRtl = "{{ app()->getLocale() === 'ar' }}" === "1";
 
     window['{{ \Illuminate\Support\Str::camel($tableId) }}'] = $(tableId).DataTable({
         processing: true,
@@ -29,25 +29,30 @@ $(document).ready(function () {
         ajax: '{{ $fetchUrl }}',
         columns: {!! json_encode($columnsConfig) !!},
         responsive: true,
-        dom: "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
-             "<'row'<'col-sm-12'tr>>" +
-             "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+        rtl: isRtl, // DataTables RTL support
+        dom: isRtl
+            ? "<'row'<'col-sm-12 col-md-6'f><'col-sm-12 col-md-6'l>>" +
+              "<'row'<'col-sm-12'tr>>" +
+              "<'row'<'col-sm-12 col-md-7'i><'col-sm-12 col-md-5'p>>"
+            : "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
+              "<'row'<'col-sm-12'tr>>" +
+              "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
         initComplete: function() {
             $(document).trigger('TableReady');
         },
         language: {
             processing: '<div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div>',
             search: "_INPUT_",
-            searchPlaceholder: "Search...",
-            lengthMenu: "Show _MENU_ entries",
-            info: "Showing _START_ to _END_ of _TOTAL_ entries",
-            infoEmpty: "No entries found",
-            infoFiltered: "(filtered from _MAX_ total entries)",
+            searchPlaceholder: isRtl ? "بحث..." : "Search...",
+            lengthMenu: isRtl ? "أظهر _MENU_ مدخلات" : "Show _MENU_ entries",
+            info: isRtl ? "عرض _START_ إلى _END_ من _TOTAL_ مدخلات" : "Showing _START_ to _END_ of _TOTAL_ entries",
+            infoEmpty: isRtl ? "لا توجد مدخلات" : "No entries found",
+            infoFiltered: isRtl ? "(مصفاة من _MAX_ إجمالي المدخلات)" : "(filtered from _MAX_ total entries)",
             paginate: {
-                first: "First",
-                last: "Last",
-                next: "Next",
-                previous: "Previous"
+                first: isRtl ? "الأول" : "First",
+                last: isRtl ? "الأخير" : "Last",
+                next: isRtl ? "التالي" : "Next",
+                previous: isRtl ? "السابق" : "Previous"
             }
         },
         drawCallback: function() {
@@ -57,6 +62,7 @@ $(document).ready(function () {
 });
 </script>
 @endpush
+
 
 @push('data-table-styles')
 <style>

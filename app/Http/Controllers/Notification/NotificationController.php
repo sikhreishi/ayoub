@@ -71,28 +71,109 @@ class NotificationController extends Controller
         }
     }
 
-    public function getAllNotification(Request $request, $page = 1)
-    {
-        $perPage = 10;
+    // public function getAllNotification(Request $request, $page = 1)
+    // {
+    //     $perPage = 10;
 
-        $notifications = Auth::user()->notifications()
+    //     $notifications = Auth::user()->notifications()
+    //         ->with(['user', 'sender.roles'])
+    //         ->orderBy('created_at', 'desc')
+    //         ->paginate($perPage, ['*'], 'page', $page);
+
+    //     return response()->json([
+    //         'success' => true,
+    //         'message' => 'Notifications retrieved successfully.',
+    //         'data' => NotificationResource::collection($notifications),
+    //         'pagination' => [
+    //             'current_page' => $notifications->currentPage(),
+    //             'last_page' => $notifications->lastPage(),
+    //             'per_page' => $notifications->perPage(),
+    //             'total' => $notifications->total(),
+    //             'has_more' => $notifications->hasMorePages(),
+    //         ]
+    //     ]);
+    // }
+
+      public function getAllNotification(Request $request, $page = 1)
+    {
+        $perPage = (int) $request->query('per_page', 10);
+
+        // optional filter: ?read=1 or ?read=0
+        $readFilter = $request->query('read'); // null | '0' | '1'
+
+        $query = Auth::user()->notifications()
             ->with(['user', 'sender.roles'])
-            ->orderBy('created_at', 'desc')
-            ->paginate($perPage, ['*'], 'page', $page);
+            ->orderBy('created_at', 'desc');
+
+        if ($readFilter !== null && in_array((int)$readFilter, [0,1], true)) {
+            $query->where('read', (int)$readFilter);
+        }
+
+        $notifications = $query->paginate($perPage, ['*'], 'page', (int)$page);
+
+        // unread count (for badges)
+        $unreadCount = Auth::user()->notifications()->where('read', false)->count();
+
+        return response()->json([
+            'success'   => true,
+            'message'   => 'Notifications retrieved successfully.',
+            // make sure your Resource exposes "read"
+            'data'      => NotificationResource::collection($notifications),
+            'pagination'=> [
+                'current_page' => $notifications->currentPage(),
+                'last_page'    => $notifications->lastPage(),
+                'per_page'     => $notifications->perPage(),
+                'total'        => $notifications->total(),
+                'has_more'     => $notifications->hasMorePages(),
+            ],
+            'meta'      => [
+                'unread_count' => $unreadCount,
+                'applied_read_filter' => $readFilter,
+            ],
+        ]);
+    }
+
+    public function markAsRead(Request $request, $id)
+    {
+        $user = $request->user();
+
+        $notification = $user->notifications()
+            ->where('id', $id)
+            ->firstOrFail();
+
+        if (!$notification->read) {
+            $notification->read = true;
+            // if you also keep read_at:
+            // $notification->read_at = now();
+            $notification->save();
+        }
 
         return response()->json([
             'success' => true,
-            'message' => 'Notifications retrieved successfully.',
-            'data' => NotificationResource::collection($notifications),
-            'pagination' => [
-                'current_page' => $notifications->currentPage(),
-                'last_page' => $notifications->lastPage(),
-                'per_page' => $notifications->perPage(),
-                'total' => $notifications->total(),
-                'has_more' => $notifications->hasMorePages(),
-            ]
+            'message' => 'Notification marked as read.',
+            'data'    => new NotificationResource($notification),
         ]);
     }
+
+    public function markAllAsRead(Request $request)
+    {
+        $user = $request->user();
+
+        $user->notifications()
+            ->where('read', false)
+            ->update([
+                'read' => true,
+                // 'read_at' => now(), // if you keep a timestamp too
+            ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'All notifications marked as read.',
+        ]);
+    }
+
+
+
 
     public function sendToUser(Request $request, FirebaseNotificationService $firebaseService)
     {
@@ -255,7 +336,7 @@ class NotificationController extends Controller
     {
         $page = $request->get('page', 1);
         $perPage = $request->get('per_page', 10);
-        $lang = session('notificationLang', 'ar');
+        $lang = session('lang', 'ar');
 
         $notifications = Auth::user()->notifications()
             ->with('sender')

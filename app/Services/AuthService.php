@@ -182,10 +182,14 @@ class AuthService implements IAuthService
             throw ValidationException::withMessages(['phone' => ucfirst($role) . ' not found']);
         }
 
+        if (!Hash::check($password, $user->password)) {
+        throw ValidationException::withMessages(['password' => 'Invalid credentials']);
+       }
+
         if ($role === 'driver') {
-            if (!Hash::check($password, $user->password)) {
-                throw ValidationException::withMessages(['password' => 'Invalid credentials']);
-            }
+            // if (!Hash::check($password, $user->password)) {
+            //     throw ValidationException::withMessages(['password' => 'Invalid credentials']);
+            // }
 
             if (!$user->hasRole('driver')) {
                 throw ValidationException::withMessages(['role' => 'Invalid role']);

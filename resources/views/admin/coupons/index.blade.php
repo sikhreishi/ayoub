@@ -25,7 +25,7 @@
                 <form id="createCouponForm">
                     <div class="mb-3">
                         <label for="coupon_code" class="form-label">Code</label>
-                        <input type="text" class="form-control" id="coupon_code" name="code" required>
+                        <input type="text" class="form-control" id="coupon_code" name="code" pattern="\S+" title="No spaces allowed" required>
                     </div>
                     <div class="mb-3">
                         <label for="coupon_type" class="form-label">Type</label>
@@ -35,8 +35,22 @@
                         </select>
                     </div>
                     <div class="mb-3">
+                        <div class="d-flex justify-content-end">
+                            <div class="btn-group mb-3" role="group" aria-label="Currency selection">
+                            @foreach($currencies as $currency)
+                                <input type="radio" class="btn-check" name="currency"
+                                    id="currency{{ $currency->id }}"
+                                    value="{{ $currency->code }}"
+                                    autocomplete="off"
+                                    {{ $currency->code === 'USD' ? 'checked' : '' }} required>
+                                <label class="btn btn-outline-primary" for="currency{{ $currency->id }}">
+                                {{ $currency->code }}
+                                </label>
+                            @endforeach
+                            </div>
+                        </div>
                         <label for="coupon_value" class="form-label">Value</label>
-                        <input type="number" class="form-control" id="coupon_value" name="value" required min="0">
+                        <input type="number" class="form-control" id="coupon_value" name="value" required step="0.01" min="0.01">
                     </div>
                     <div class="mb-3">
                         <label for="coupon_max_uses" class="form-label">Max Uses</label>
@@ -168,7 +182,10 @@ $(document).ready(function () {
     // Handle create form submit
     $('#createCouponForm').on('submit', function (e) {
         e.preventDefault();
-        const formData = $(this).serialize();
+
+        const currency = $('input[name="currency"]:checked').val() || 'USD';
+        
+        const formData = $(this).serialize() + '&currency=' + encodeURIComponent(currency);
         $.ajax({
             url: "{{ route('admin.coupons.store') }}",
             method: 'POST',
