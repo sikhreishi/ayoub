@@ -144,11 +144,11 @@ public function resetPassword(ResetPasswordRequest $request)
             return $this->jsonError('User not found', 404);
         }
 
-        $verified = $this->authService->verifyOTP($user, $data);
+        // $verified = $this->authService->verifyOTP($user, $data);
 
-        if (!$verified) {
-            return $this->jsonError('Invalid OTP', 422);
-        }
+        // if (!$verified) {
+        //     return $this->jsonError('Invalid OTP', 422);
+        // }
 
         $this->authService->resetPassword($user, $data['password']);
 

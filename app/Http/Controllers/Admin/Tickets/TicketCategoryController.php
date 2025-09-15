@@ -46,6 +46,8 @@ class TicketCategoryController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'name_en' => 'required|string|max:255',
+            'name_ar' => 'required|string|max:255',
             'description' => 'nullable|string',
             'color' => 'required|string|regex:/^#[0-9A-Fa-f]{6}$/',
             'is_active' => 'boolean',
@@ -54,6 +56,8 @@ class TicketCategoryController extends Controller
 
         TicketCategory::create([
             'name' => $request->name,
+            'name_en' => $request->name_en,
+            'name_ar' => $request->name_ar,
             'slug' => Str::slug($request->name),
             'description' => $request->description,
             'color' => $request->color,
@@ -77,6 +81,8 @@ class TicketCategoryController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'name_en' => 'required|string|max:255',
+            'name_ar' => 'required|string|max:255',
             'description' => 'nullable|string',
             'color' => 'required|string|regex:/^#[0-9A-Fa-f]{6}$/',
             'is_active' => 'boolean',
@@ -86,6 +92,8 @@ class TicketCategoryController extends Controller
         $category = TicketCategory::findOrFail($id);
         $category->update([
             'name' => $request->name,
+            'name_en' => $request->name_en,
+            'name_ar' => $request->name_ar,
             'slug' => Str::slug($request->name),
             'description' => $request->description,
             'color' => $request->color,

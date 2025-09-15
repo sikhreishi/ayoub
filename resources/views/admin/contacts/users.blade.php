@@ -20,15 +20,28 @@
 
         <div class="table-responsive">
 
-            <x-data-table title="User Messages (User Role Only)" table-id="user-contacts-table"
-                fetch-url="{{ route('admin.contacts.users') }}" :columns="['Name', 'Email', 'Phone', 'Role', 'Message', 'Actions']" :columns-config="[
-                    ['data' => 'user_name', 'name' => 'user_name'],
-                    ['data' => 'email', 'name' => 'email'],
-                    ['data' => 'phone', 'name' => 'phone'],
-                    ['data' => 'user_role', 'name' => 'user_role'],
-                    ['data' => 'message', 'name' => 'message'],
-                    ['data' => 'actions', 'name' => 'actions', 'orderable' => false, 'searchable' => false],
-                ]" />
+<x-data-table 
+    title="{{ __('dashboard.contacts.user_messages') }}" 
+    table-id="user-contacts-table"
+    fetch-url="{{ route('admin.contacts.users') }}"
+    :columns="[
+        __('dashboard.contacts.name'), 
+        __('dashboard.contacts.email'), 
+        __('dashboard.contacts.phone'), 
+        __('dashboard.contacts.role'), 
+        __('dashboard.contacts.message'), 
+        __('dashboard.contacts.actions')
+    ]"
+    :columns-config="[
+        ['data' => 'user_name', 'name' => 'user_name'],
+        ['data' => 'email', 'name' => 'email'],
+        ['data' => 'phone', 'name' => 'phone'],
+        ['data' => 'user_role', 'name' => 'user_role'],
+        ['data' => 'message', 'name' => 'message'],
+        ['data' => 'actions', 'name' => 'actions', 'orderable' => false, 'searchable' => false]
+    ]"
+/>
+
         </div>
     </div>
 @endsection

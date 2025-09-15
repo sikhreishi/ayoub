@@ -46,7 +46,6 @@
         }
     </style>
 @endpush
-
 @section('content')
     <div class="container-fluid">
         <!-- Enhanced Page Header -->
@@ -57,7 +56,7 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal"
                                 data-bs-target="#categoryModal">
-                                <i class="fas fa-plus me-2"></i>Add Category
+                                <i class="fas fa-plus me-2"></i>{{ __('dashboard.ticket_categories.add_category') }}
                             </button>
                         </div>
                     </div>
@@ -71,8 +70,19 @@
                 <div class="card border-0 shadow-sm">
                     <div class="card-body">
                         <div class="table-responsive">
-                            <x-data-table title="Categories List" table-id="categories-table"
-                                fetch-url="{{ route('admin.ticket_categories.data') }}" :columns="['Name', 'Color', 'Description', 'Tickets', 'Status', 'Order', 'Actions']"
+                            <x-data-table 
+                                :title="__('dashboard.ticket_categories.categories_list')" 
+                                table-id="categories-table"
+                                fetch-url="{{ route('admin.ticket_categories.data') }}" 
+                                :columns="[
+                                    __('dashboard.ticket_categories.name'), 
+                                    __('dashboard.ticket_categories.color'), 
+                                    __('dashboard.ticket_categories.description'), 
+                                    __('dashboard.ticket_categories.tickets_count'), 
+                                    __('dashboard.ticket_categories.status'), 
+                                    __('dashboard.ticket_categories.order'), 
+                                    __('dashboard.ticket_categories.actions')
+                                ]"
                                 :columns-config="[
                                     ['data' => 'name', 'name' => 'name'],
                                     ['data' => 'color_preview', 'name' => 'color', 'orderable' => false],
@@ -86,7 +96,8 @@
                                         'orderable' => false,
                                         'searchable' => false,
                                     ],
-                                ]" />
+                                ]" 
+                            />
                         </div>
                     </div>
                 </div>
@@ -100,7 +111,7 @@
             <div class="modal-content border-0 shadow">
                 <div class="modal-header">
                     <h5 class="modal-title" id="categoryModalTitle">
-                        <i class="fas fa-tag me-2"></i>Add Category
+                        <i class="fas fa-tag me-2"></i>{{ __('dashboard.ticket_categories.modals.add_category_title') }}
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
@@ -112,16 +123,34 @@
                             <div class="col-md-8">
                                 <div class="mb-3">
                                     <label for="categoryName" class="form-label fw-semibold">
-                                        <i class="fas fa-signature text-primary me-1"></i>Name *
+                                        <i class="fas fa-signature text-primary me-1"></i>{{ __('dashboard.ticket_categories.modals.name_label') }}
                                     </label>
                                     <input type="text" id="categoryName" name="name"
-                                        class="form-control form-control-lg" placeholder="Enter category name" required>
+                                        class="form-control form-control-lg" placeholder="{{ __('dashboard.ticket_categories.name') }}" required>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="mb-3">
+                                    <label for="categoryNameEn" class="form-label fw-semibold">
+                                        <i class="fas fa-signature text-primary me-1"></i>{{ __('dashboard.ticket_categories.modals.name_label_en') }}
+                                    </label>
+                                    <input type="text" id="categoryNameEn" name="name_en"
+                                        class="form-control form-control-lg" placeholder="{{ __('dashboard.ticket_categories.name_en') }}" required>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="mb-3">
+                                    <label for="categoryNameAr" class="form-label fw-semibold">
+                                        <i class="fas fa-signature text-primary me-1"></i>{{ __('dashboard.ticket_categories.modals.name_label_ar') }}
+                                    </label>
+                                    <input type="text" id="categoryNameAr" name="name_ar"
+                                        class="form-control form-control-lg" placeholder="{{ __('dashboard.ticket_categories.name_ar') }}" required>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="mb-3">
                                     <label for="categorySortOrder" class="form-label fw-semibold">
-                                        <i class="fas fa-sort-numeric-up text-primary me-1"></i>Sort Order
+                                        <i class="fas fa-sort-numeric-up text-primary me-1"></i>{{ __('dashboard.ticket_categories.modals.sort_order_label') }}
                                     </label>
                                     <input type="number" id="categorySortOrder" name="sort_order"
                                         class="form-control form-control-lg" value="0" min="0">
@@ -131,34 +160,34 @@
 
                         <div class="mb-3">
                             <label for="categoryDescription" class="form-label fw-semibold">
-                                <i class="fas fa-align-left text-primary me-1"></i>Description
+                                <i class="fas fa-align-left text-primary me-1"></i>{{ __('dashboard.ticket_categories.modals.description_label') }}
                             </label>
                             <textarea id="categoryDescription" name="description" class="form-control" rows="3"
-                                placeholder="Enter category description"></textarea>
+                                placeholder="{{ __('dashboard.ticket_categories.description') }}"></textarea>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="categoryColor" class="form-label fw-semibold">
-                                        <i class="fas fa-palette text-primary me-1"></i>Color *
+                                        <i class="fas fa-palette text-primary me-1"></i>{{ __('dashboard.ticket_categories.modals.color_label') }}
                                     </label>
                                     <div class="d-flex align-items-center">
                                         <input type="color" id="categoryColor" name="color"
                                             class="form-control form-control-color me-3" value="#007bff" required>
-                                        <span class="text-muted">Choose category color</span>
+                                        <span class="text-muted">{{ __('dashboard.ticket_categories.choose_color') }}</span>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label fw-semibold">
-                                        <i class="fas fa-toggle-on text-primary me-1"></i>Status
+                                        <i class="fas fa-toggle-on text-primary me-1"></i>{{ __('dashboard.ticket_categories.modals.status_label') }}
                                     </label>
                                     <div class="form-check form-switch">
                                         <input type="checkbox" id="categoryIsActive" name="is_active"
                                             class="form-check-input" checked>
-                                        <label class="form-check-label" for="categoryIsActive">Active</label>
+                                        <label class="form-check-label" for="categoryIsActive">{{ __('dashboard.ticket_categories.modals.status_active') }}</label>
                                     </div>
                                 </div>
                             </div>
@@ -166,10 +195,10 @@
                     </div>
                     <div class="modal-footer bg-light">
                         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                            <i class="fas fa-times me-1"></i>Cancel
+                            <i class="fas fa-times me-1"></i>{{ __('dashboard.ticket_categories.modals.cancel_btn') }}
                         </button>
                         <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save me-1"></i>Save Category
+                            <i class="fas fa-save me-1"></i>{{ __('dashboard.ticket_categories.modals.save_btn') }}
                         </button>
                     </div>
                 </form>
@@ -183,7 +212,7 @@
             <div class="modal-content border-0 shadow delete-modal">
                 <div class="modal-header">
                     <h5 class="modal-title">
-                        <i class="fas fa-exclamation-triangle me-2"></i>Confirm Deletion
+                        <i class="fas fa-exclamation-triangle me-2"></i>{{ __('dashboard.ticket_categories.modals.delete_confirm_title') }}
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
@@ -191,16 +220,15 @@
                     <div class="mb-3">
                         <i class="fas fa-trash-alt text-danger" style="font-size: 3rem;"></i>
                     </div>
-                    <h5 class="mb-2">Are you sure?</h5>
-                    <p class="text-muted mb-0">You want to delete this category?</p>
-                    <p class="text-muted small">This action cannot be undone and may affect related tickets.</p>
+                    <h5 class="mb-2">{{ __('dashboard.ticket_categories.modals.delete_confirm_text') }}</h5>
+                    <p class="text-muted mb-0">{{ __('dashboard.ticket_categories.modals.delete_warning') }}</p>
                 </div>
                 <div class="modal-footer justify-content-center bg-light">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                        <i class="fas fa-times me-1"></i>Cancel
+                        <i class="fas fa-times me-1"></i>{{ __('dashboard.ticket_categories.modals.delete_cancel_btn') }}
                     </button>
                     <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
-                        <i class="fas fa-trash me-1"></i>Yes, Delete
+                        <i class="fas fa-trash me-1"></i>{{ __('dashboard.ticket_categories.modals.delete_confirm_btn') }}
                     </button>
                 </div>
             </div>
@@ -280,6 +308,9 @@
                         const category = response.data;
                         $('#categoryId').val(category.id);
                         $('#categoryName').val(category.name);
+                        $('#categoryNameEn').val(category.name_en);
+                        $('#categoryNameAr').val(category.name_ar);
+
                         $('#categoryDescription').val(category.description);
                         $('#categoryColor').val(category.color);
                         $('#categorySortOrder').val(category.sort_order);
@@ -331,6 +362,8 @@
 
             const formData = {
                 name: $('#categoryName').val().trim(),
+                name_en: $('#categoryNameEn').val().trim(),
+                name_ar: $('#categoryNameAr').val().trim(),
                 description: $('#categoryDescription').val().trim(),
                 color: $('#categoryColor').val(),
                 sort_order: $('#categorySortOrder').val() || 0,

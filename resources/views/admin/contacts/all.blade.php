@@ -20,18 +20,30 @@
         </div>
 
         <!-- Messages Table -->
-        <div class="table-responsive">
-            
-            <x-data-table title="All Contact Messages" table-id="all-contacts-table"
-                fetch-url="{{ route('admin.contacts.all') }}" :columns="['Name', 'Email', 'Phone', 'Role', 'Message', 'Actions']" :columns-config="[
-                    ['data' => 'sender_name', 'name' => 'sender_name'],
-                    ['data' => 'email', 'name' => 'email'],
-                    ['data' => 'phone', 'name' => 'phone'],
-                    ['data' => 'sender_role', 'name' => 'sender_role'],
-                    ['data' => 'message', 'name' => 'message'],
-                    ['data' => 'actions', 'name' => 'actions', 'orderable' => false, 'searchable' => false],
-                ]" />
-        </div>
+      <div class="table-responsive">
+    <x-data-table
+        title="{{ __('dashboard.contacts.all_messages') }}"
+        table-id="all-contacts-table"
+        fetch-url="{{ route('admin.contacts.all') }}"
+        :columns="[
+            __('dashboard.contacts.name'),
+            __('dashboard.contacts.email'),
+            __('dashboard.contacts.phone'),
+            __('dashboard.contacts.role'),
+            __('dashboard.contacts.message'),
+            __('dashboard.contacts.actions')
+        ]"
+        :columns-config="[
+            ['data' => 'sender_name', 'name' => 'sender_name'],
+            ['data' => 'email', 'name' => 'email'],
+            ['data' => 'phone', 'name' => 'phone'],
+            ['data' => 'sender_role', 'name' => 'sender_role'],
+            ['data' => 'message', 'name' => 'message'],
+            ['data' => 'actions', 'name' => 'actions', 'orderable' => false, 'searchable' => false],
+        ]"
+    />
+</div>
+
     </div>
 @endsection
 

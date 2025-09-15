@@ -291,4 +291,134 @@ return [
         'update_commission' => 'Update Commission',
         'usd_note' => '💵 Please enter the amount in USD $',
     ],
+
+     'contacts' => [
+        'all_messages' => 'All Contact Messages',
+        'driver_messages' => 'Driver Messages',
+        'user_messages' => 'User Messages',
+
+        'name' => 'Name',
+        'email' => 'Email',
+        'phone' => 'Phone',
+        'role' => 'Role',
+        'message' => 'Message',
+        'actions' => 'Actions',
+    ],
+
+    'tickets' => [
+        'all_tickets'=> 'All Tickets',
+        'open_tickets'=> 'Open Tickets',
+        'pending_tickets'=> 'Pending Tickets',
+        'resolved_tickets'=> 'Resolved Tickets',
+        'closed_tickets'=> 'Closed Tickets',
+        'urgent_tickets'=> 'Urgent Tickets',
+        'name'=> 'Name',
+        'email'=> 'Email',
+        'phone'=> 'Phone',
+        'role'=> 'Role',
+        'ticket'=> 'Ticket',
+        'sender'=> 'Sender',
+        'status'=> 'Status',
+        'priority'=> 'Priority',
+        'category'=> 'Category',
+        'assigned_to'=> 'Assigned To',
+        'created_at'=> 'Created At',
+        'actions'=> 'Actions',
+
+        'delete_confirm'=> 'Are you sure you want to delete this ticket?',
+        'delete_success'=> 'Ticket deleted successfully',
+        'delete_error'=> 'Failed to delete ticket',
+        'delete_failed'=> 'An error occurred while deleting the ticket'
+    ],
+
+    'ticket_detail'=> [
+        'title'=> 'Ticket #{{ ticket_number }}',
+        'breadcrumb'=> [
+            'tickets'=> 'Tickets',
+            'current_ticket'=> 'Current Ticket'
+        ],
+        'unassigned'=> 'Unassigned',
+        'status'=> 'Status',
+        'created_at'=> 'Created At',
+        'description'=> 'Description',
+        'back_to_tickets'=> 'Back to All Tickets',
+        'conversation'=> 'Conversation',
+        'typing_indicator'=> 'Someone is typing...',
+        'add_reply'=> 'Add Reply',
+        'internal_note'=> 'Internal note (not visible to customer)',
+        'send_reply'=> 'Send Reply',
+        'sender_info'=> 'Sender Information',
+        'actions'=> 'Actions',
+        'update_status'=> 'Update Status',
+        'assign_to'=> 'Assign To',
+        'priority'=> 'Priority',
+        'category'=> 'Category',
+        'real_time_status'=> 'Real-time Status',
+        'connected'=> 'Connected',
+        'last_update'=> 'Last Update',
+        'active_users'=> 'Active Users',
+        'status_badges'=> [
+            'open'=> 'Open',
+            'pending'=> 'Pending',
+            'in_progress'=> 'In Progress',
+            'resolved'=> 'Resolved',
+            'closed'=> 'Closed'
+        ],
+        'priority_badges'=> [
+            'low'=> 'Low',
+            'medium'=> 'Medium',
+            'high'=> 'High',
+            'urgent'=> 'Urgent'
+        ],
+        'uncategorized'=> 'Uncategorized',
+        'you'=> 'You',
+        'unknown'=> 'Unknown'
+
+    ],
+
+    'ticket_categories' => [
+        'page_title' => 'Ticket Categories',
+        'add_category' => 'Add Category',
+        'categories_list' => 'Categories List',
+        'name' => 'Name',
+        'name_en' => 'Name (English)',
+        'name_ar' => 'Name (Arabic)',
+        'color' => 'Color',
+        'description' => 'Description',
+        'tickets_count' => 'Tickets',
+        'status' => 'Status',
+        'order' => 'Order',
+        'actions' => 'Actions',
+        'active' => 'Active',
+        'inactive' => 'Inactive',
+        'choose_color' => 'Choose category color',
+
+        'modals' => [
+            'add_category_title' => 'Add Category',
+            'edit_category_title' => 'Edit Category',
+            'name_label' => 'Name *',
+            'name_label_en' => 'Name (English) *',
+            'name_label_ar' => 'Name (Arabic) *',
+            'description_label' => 'Description',
+            'color_label' => 'Color *',
+            'sort_order_label' => 'Sort Order',
+            'status_label' => 'Status',
+            'status_active' => 'Active',
+            'status_inactive' => 'Inactive',
+            'cancel_btn' => 'Cancel',
+            'save_btn' => 'Save Category',
+            'delete_confirm_title' => 'Confirm Deletion',
+            'delete_confirm_text' => 'Are you sure you want to delete this category?',
+            'delete_warning' => 'This action cannot be undone and may affect related tickets.',
+            'delete_cancel_btn' => 'Cancel',
+            'delete_confirm_btn' => 'Yes, Delete'
+        ],
+
+        'messages' => [
+            'delete_success' => 'Category deleted successfully',
+            'delete_error' => 'Failed to delete category',
+            'delete_failed' => 'An error occurred while deleting the category'
+        ]
+    ]
+
 ];

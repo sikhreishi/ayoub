@@ -22,15 +22,27 @@
         <!-- Messages Table -->
         <div class="table-responsive">
 
-            <x-data-table title="Driver Messages (Driver Role Only)" table-id="driver-contacts-table"
-                fetch-url="{{ route('admin.contacts.drivers') }}" :columns="['Name', 'Email', 'Phone', 'Role', 'Message', 'Actions']" :columns-config="[
-                    ['data' => 'driver_name', 'name' => 'driver_name'],
-                    ['data' => 'email', 'name' => 'email'],
-                    ['data' => 'phone', 'name' => 'phone'],
-                    ['data' => 'driver_role', 'name' => 'driver_role'],
-                    ['data' => 'message', 'name' => 'message'],
-                    ['data' => 'actions', 'name' => 'actions', 'orderable' => false, 'searchable' => false],
-                ]" />
+          <x-data-table 
+    title="{{ __('dashboard.contacts.driver_messages') }}" 
+    table-id="driver-contacts-table"
+    fetch-url="{{ route('admin.contacts.drivers') }}"
+    :columns="[
+        __('dashboard.contacts.name'), 
+        __('dashboard.contacts.email'), 
+        __('dashboard.contacts.phone'), 
+        __('dashboard.contacts.role'), 
+        __('dashboard.contacts.message'), 
+        __('dashboard.contacts.actions')
+    ]"
+    :columns-config="[
+        ['data' => 'driver_name', 'name' => 'driver_name'],
+        ['data' => 'email', 'name' => 'email'],
+        ['data' => 'phone', 'name' => 'phone'],
+        ['data' => 'driver_role', 'name' => 'driver_role'],
+        ['data' => 'message', 'name' => 'message'],
+        ['data' => 'actions', 'name' => 'actions', 'orderable' => false, 'searchable' => false]
+    ]"
+/>
         </div>
     </div>
 @endsection

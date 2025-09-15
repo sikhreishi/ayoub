@@ -229,7 +229,7 @@ class TicketController extends Controller
     public function categories()
     {
         $categories = TicketCategory::where('is_active', true)
-            ->select('id', 'name', 'slug', 'description', 'color')
+            ->select('id', 'name','name_en','name_ar', 'slug', 'description', 'color')
             ->orderBy('sort_order')
             ->get();
 

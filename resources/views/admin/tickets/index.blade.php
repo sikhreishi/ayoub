@@ -20,37 +20,38 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-3">
-                        <label for="statusFilter">Status</label>
-                        <select id="statusFilter" class="form-control">
-                            <option value="">All Statuses</option>
-                            <option value="open">Open</option>
-                            <option value="pending">Pending</option>
-                            <option value="in_progress">In Progress</option>
-                            <option value="resolved">Resolved</option>
-                            <option value="closed">Closed</option>
-                        </select>
+                         <label for="statusFilter">{{ __('dashboard.tickets.status') }}</label>
+    <select id="statusFilter" class="form-control">
+        <option value="">{{ __('dashboard.tickets.all_tickets') }}</option>
+        <option value="open">{{ __('dashboard.tickets.open_tickets') }}</option>
+        <option value="pending">{{ __('dashboard.tickets.pending_tickets') }}</option>
+        <option value="in_progress">{{ __('dashboard.tickets.pending_tickets') }}</option>
+        <option value="resolved">{{ __('dashboard.tickets.all_tickets') }}</option>
+        <option value="closed">{{ __('dashboard.tickets.all_tickets') }}</option>
+    </select>
                     </div>
                     <div class="col-md-3">
-                        <label for="priorityFilter">Priority</label>
-                        <select id="priorityFilter" class="form-control">
-                            <option value="">All Priorities</option>
-                            <option value="low">Low</option>
-                            <option value="medium">Medium</option>
-                            <option value="high">High</option>
-                            <option value="urgent">Urgent</option>
-                        </select>
+                          <label for="priorityFilter">{{ __('dashboard.tickets.priority') }}</label>
+    <select id="priorityFilter" class="form-control">
+        <option value="">{{ __('dashboard.tickets.all_tickets') }}</option>
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+        <option value="urgent">{{ __('dashboard.tickets.urgent_tickets') }}</option>
+    </select>
                     </div>
                     <div class="col-md-3">
-                        <label for="categoryFilter">Category</label>
-                        <select id="categoryFilter" class="form-control">
-                            <option value="">All Categories</option>
-                        </select>
+                          <label for="categoryFilter">{{ __('dashboard.tickets.category') }}</label>
+    <select id="categoryFilter" class="form-control">
+        <option value="">{{ __('dashboard.tickets.all_tickets') }}</option>
+    </select>
                     </div>
                     <div class="col-md-3">
-                        <label for="assignedFilter">Assigned To</label>
-                        <select id="assignedFilter" class="form-control">
-                            <option value="">All Assignments</option>
-                            <option value="unassigned">Unassigned</option>
+                       <label for="assignedFilter">{{ __('dashboard.tickets.assigned_to') }}</label>
+    <select id="assignedFilter" class="form-control">
+        <option value="">{{ __('dashboard.tickets.all_tickets') }}</option>
+        <option value="unassigned">Unassigned</option>
+    </select>
                         </select>
                     </div>
                 </div>
@@ -59,7 +60,16 @@
 
         <div class="table-responsive">
             <x-data-table title="Support Tickets" table-id="tickets-table" fetch-url="{{ route('admin.tickets.data') }}"
-                :columns="['Ticket', 'Sender', 'Status', 'Priority', 'Category', 'Assigned To', 'Created', 'Actions']" :columns-config="[
+               :columns="[
+                    __('dashboard.tickets.ticket'),
+                    __('dashboard.tickets.sender'),
+                    __('dashboard.tickets.status'),
+                    __('dashboard.tickets.priority'),
+                    __('dashboard.tickets.category'),
+                    __('dashboard.tickets.assigned_to'),
+                    __('dashboard.tickets.created_at'),
+                    __('dashboard.tickets.actions'),]"
+                    :columns-config="[
                     ['data' => 'ticket_info', 'name' => 'ticket_number', 'orderable' => false],
                     ['data' => 'sender_info', 'name' => 'sender_name', 'orderable' => false],
                     ['data' => 'status_badge', 'name' => 'status'],
@@ -113,7 +123,7 @@
                         <div class="card-body">
                             <div class="row no-gutters align-items-center">
                                 <div class="col mr-2">
-                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Tickets</div>
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">{{ __('dashboard.tickets.all_tickets') }}</div>
                                     <div class="h5 mb-0 font-weight-bold text-gray-800">${stats.total || 0}</div>
                                 </div>
                                 <div class="col-auto">
@@ -128,7 +138,7 @@
                         <div class="card-body">
                             <div class="row no-gutters align-items-center">
                                 <div class="col mr-2">
-                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Open Tickets</div>
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">{{ __('dashboard.tickets.open_tickets') }}</div>
                                     <div class="h5 mb-0 font-weight-bold text-gray-800">${stats.open || 0}</div>
                                 </div>
                                 <div class="col-auto">
@@ -143,7 +153,7 @@
                         <div class="card-body">
                             <div class="row no-gutters align-items-center">
                                 <div class="col mr-2">
-                                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Pending</div>
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">{{ __('dashboard.tickets.pending_tickets') }}</div>
                                     <div class="h5 mb-0 font-weight-bold text-gray-800">${stats.pending || 0}</div>
                                 </div>
                                 <div class="col-auto">
@@ -158,7 +168,7 @@
                         <div class="card-body">
                             <div class="row no-gutters align-items-center">
                                 <div class="col mr-2">
-                                    <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Urgent</div>
+                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">{{ __('dashboard.tickets.urgent_tickets') }}</div>
                                     <div class="h5 mb-0 font-weight-bold text-gray-800">${stats.urgent || 0}</div>
                                 </div>
                                 <div class="col-auto">

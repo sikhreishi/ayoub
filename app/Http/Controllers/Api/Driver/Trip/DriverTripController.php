@@ -106,7 +106,9 @@ class DriverTripController extends Controller
 
             // NOTIFICATION: Send to passenger (ALL devices)
             $driver = auth()->user()->load('driverProfile');
-            $vehicleInfo = $driver->driverProfile->vehicle ? $driver->driverProfile->vehicle->make . ' ' . $driver->vehicle->driverProfile->model : 'vehicle';
+            $vehicleInfo = $driver->driverProfile->vehicle
+                ? $driver->driverProfile->vehicle->make . ' ' . $driver->driverProfile->vehicle->model
+                : 'vehicle';
             $this->FirebaseInstantNotificationService->sendTripAcceptedToPassenger(
                 $trip->user_id, // Passenger user ID
                 $trip->id, 

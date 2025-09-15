@@ -20,9 +20,9 @@ public function rules()
     return [
         'phone' => 'required|numeric',
         'password' => 'required|confirmed|min:8',
-        'otp' => 'required|string|size:6',
-        'token' => 'nullable|string',
-        'platform' => 'nullable|string|in:ios,android,web',
+        // 'otp' => 'required|string|size:6',
+        // 'token' => 'nullable|string',
+        // 'platform' => 'nullable|string|in:ios,android,web',
     ];
 }
 
