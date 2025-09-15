@@ -43,7 +43,7 @@ class DriverTripController extends Controller
             if (!auth()->user()->hasRole('driver')) {
                 return response()->json(['message' => 'Unauthorized, not a driver.'], 403);
             }
-     $user = auth()->user()->load('driverAvailability','driverProfile');
+            $user = auth()->user()->load('driverAvailability','driverProfile');
 
             if (!$user->driverProfile || !$user->driverProfile->is_driver_verified) {
                 return response()->json(['message' => 'driver not verified'], 403);
@@ -105,8 +105,8 @@ class DriverTripController extends Controller
             );
 
             // NOTIFICATION: Send to passenger (ALL devices)
-            $driver = auth()->user();
-            $vehicleInfo = $driver->vehicle ? $driver->vehicle->make . ' ' . $driver->vehicle->model : 'vehicle';
+            $driver = auth()->user()->load('driverProfile');
+            $vehicleInfo = $driver->driverProfile->vehicle ? $driver->driverProfile->vehicle->make . ' ' . $driver->vehicle->driverProfile->model : 'vehicle';
             $this->FirebaseInstantNotificationService->sendTripAcceptedToPassenger(
                 $trip->user_id, // Passenger user ID
                 $trip->id, 

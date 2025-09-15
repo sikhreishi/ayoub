@@ -11,13 +11,15 @@ use Laratrust\Models\Role;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Vehicle\VehicleType;
 use App\Services\AudiLogsService;
+use App\Models\Wallet;
 
 class UsersController extends Controller
 {
 
     public function index(Request $request)
     {
-        return view('admin.users.index');
+        $countries = \App\Models\Country::all();
+        return view('admin.users.index', compact('countries'));
     }
 
     public function getUsersData(Request $request)
@@ -53,35 +55,38 @@ class UsersController extends Controller
     public function store(Request $request)
     {
         try {
-            // Validate the request
+
             $request->validate([
                 'name' => 'required|string|max:255',
                 'email' => 'required|string|email|max:255|unique:users,email',
                 'phone' => 'nullable|string|max:15',
-                'language' => 'nullable|string|max:50',
                 'password' => 'required|string|min:8|confirmed',
                 'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'country_id' => 'nullable|exists:countries,id',
             ]);
 
-            // Create the new user
             $user = new User();
             $user->name = $request->input('name');
             $user->email = $request->input('email');
             $user->phone = $request->input('phone');
-            $user->language = $request->input('language');
             $user->password = bcrypt($request->input('password'));
+            $user->country_id = $request->input('country_id');
 
-            // Handle avatar file upload (if provided)
             if ($request->hasFile('avatar')) {
                 $user->avatar = $request->file('avatar')->store('avatars', 'public');
             }
 
-            $user->save();
+           
+            
+
+            $user->save(); 
+            
+            $user->wallet()->save(new Wallet(['balance' => 0.00]));
+
             $new = $user->toArray();
             AudiLogsService::storeLog('create', 'users', $user->id, null, $new);
 
-            // Assign the 'user' role to the new user
-            $user->assignRole('user'); // Ensure the role exists
+            $user->assignRole('user');
 
             return response()->json([
                 'success' => true,
@@ -149,7 +154,7 @@ class UsersController extends Controller
                 'name' => 'required|string|max:255',
                 'email' => 'required|string|email|max:255|unique:users,email,' . $id,
                 'phone' => 'nullable|string|max:15',
-                'language' => 'nullable|string|max:50',
+                'country_id' => 'nullable|exists:countries,id',
                 'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Optional avatar validation
             ]);
 
@@ -159,7 +164,7 @@ class UsersController extends Controller
             $user->name = $request->input('name');
             $user->email = $request->input('email');
             $user->phone = $request->input('phone');
-            $user->language = $request->input('language');
+            $user->country_id = $request->input('country_id');
 
             // Handle avatar file upload (if provided)
             if ($request->hasFile('avatar')) {

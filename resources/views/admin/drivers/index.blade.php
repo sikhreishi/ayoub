@@ -19,16 +19,18 @@
 
 
 <!-- Button to Add New Driver -->
-    <button class="btn btn-primary mb-3" id="createDriverBtn">Add New Driver</button>
+   <button class="btn btn-primary mb-3" id="createDriverBtn">
+    {{ __('dashboard.drivers.add_new_driver') }}
+</button>
 
 <!-- Table with Bootstrap and custom styles -->
 <div class="table-responsive">
 
     <x-data-table
-        title="Drivers"
+    title="{{ __('dashboard.users.drivers') }}" 
         table-id="drivers-table"
         fetch-url="{{ route('admin.drivers.data') }}"
-        :columns="['Name', 'Email', 'Phone', 'Avatar', 'Actions']"
+        :columns="[__('dashboard.users.name'), __('dashboard.users.email'), __('dashboard.users.phone'), __('dashboard.users.avatar'), __('dashboard.users.actions')]"
         :columns-config="[
             ['data' => 'name', 'name' => 'name'],
             ['data' => 'email', 'name' => 'email'],
@@ -45,41 +47,49 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="createDriverModalLabel">Create New Driver</h5>
+<h5 class="modal-title" id="createDriverModalLabel">{{ __('dashboard.drivers.create_new_driver') }}</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <form id="createDriverForm">
           <div class="mb-3">
-            <label for="name" class="form-label">Name</label>
+<label for="name" class="form-label">{{ __('dashboard.drivers.name') }}</label>
             <input type="text" class="form-control" id="name" required>
           </div>
           <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
+<label for="email" class="form-label">{{ __('dashboard.drivers.email') }}</label>
             <input type="email" class="form-control" id="email" required>
           </div>
           <div class="mb-3">
-            <label for="phone" class="form-label">Phone</label>
+<label for="phone" class="form-label">{{ __('dashboard.drivers.phone') }}</label>
             <input type="text" class="form-control" id="phone">
           </div>
-          <div class="mb-3">
-            <label for="language" class="form-label">Language</label>
-            <input type="text" class="form-control" id="language">
-          </div>
+         
          <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
+<label for="password" class="form-label">{{ __('dashboard.drivers.password') }}</label>
             <input type="password" class="form-control" id="password" required>
          </div>
          <div class="mb-3">
-            <label for="password_confirmation" class="form-label">Confirm Password</label>
+<label for="password_confirmation" class="form-label">{{ __('dashboard.drivers.confirm_password') }}</label>
             <input type="password" class="form-control" id="password_confirmation" required>
          </div>
+                                 <div class="mb-3">
+<label for="country_id" class="form-label">{{ __('dashboard.users.country') }}</label>
+                            <select class="form-select" id="country_id" required>
+                            <option value="">{{ __('dashboard.users.select_country') }}</option>
+@foreach ($countries as $country)
+    <option value="{{ $country->id }}">
+        {{ app()->getLocale() === 'ar' ? $country->name_ar : $country->name_en }}
+    </option>
+@endforeach
+                            </select>
+                        </div>
 
           <div class="mb-3">
-            <label for="avatar" class="form-label">Avatar</label>
+<label for="avatar" class="form-label">{{ __('dashboard.drivers.avatar') }}</label>
             <input type="file" class="form-control" id="avatar">
           </div>
-          <button type="submit" class="btn btn-primary">Create Driver</button>
+<button type="submit" class="btn btn-primary">{{ __('dashboard.drivers.create') }}</button>
         </form>
       </div>
     </div>
@@ -92,7 +102,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="updateDriverModalLabel">Update Driver</h5>
+<h5 class="modal-title" id="updateDriverModalLabel">{{ __('dashboard.drivers.update_driver') }}</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -100,27 +110,34 @@
           <input type="hidden" id="update_driver_id"> <!-- Hidden field for driver ID -->
 
           <div class="mb-3">
-            <label for="update_name" class="form-label">Name</label>
+<label for="update_name" class="form-label">{{ __('dashboard.drivers.name') }}</label>
             <input type="text" class="form-control" id="update_name" required>
           </div>
           <div class="mb-3">
-            <label for="update_email" class="form-label">Email</label>
+<label for="update_email" class="form-label">{{ __('dashboard.drivers.email') }}</label>
             <input type="email" class="form-control" id="update_email" required>
           </div>
           <div class="mb-3">
-            <label for="update_phone" class="form-label">Phone</label>
+<label for="update_phone" class="form-label">{{ __('dashboard.drivers.phone') }}</label>
             <input type="text" class="form-control" id="update_phone">
           </div>
+                        <div class="mb-3">
+<label for="update_country_id" class="form-label">{{ __('dashboard.users.country') }}</label>
+                            <select class="form-select" id="update_country_id" required>
+<option value="">{{ __('dashboard.users.select_country') }}</option>
+@foreach ($countries as $country)
+    <option value="{{ $country->id }}">
+        {{ app()->getLocale() === 'ar' ? $country->name_ar : $country->name_en }}
+    </option>
+@endforeach
+                            </select>
+                        </div>
           <div class="mb-3">
-            <label for="update_language" class="form-label">Language</label>
-            <input type="text" class="form-control" id="update_language">
-          </div>
-          <div class="mb-3">
-            <label for="update_avatar" class="form-label">Avatar</label>
+<label for="update_avatar" class="form-label">{{ __('dashboard.drivers.avatar') }}</label>
             <input type="file" class="form-control" id="update_avatar">
           </div>
 
-          <button type="submit" class="btn btn-primary">Update Driver</button>
+<button type="submit" class="btn btn-primary">{{ __('dashboard.drivers.update') }}</button>
         </form>
       </div>
     </div>
@@ -161,7 +178,7 @@
 
             // Check if password and confirm password match
             if (password !== confirmPassword) {
-                showToast('error', 'Passwords do not match!');
+    showToast('error', '{{ __("dashboard.drivers.passwords_not_match") }}');
                 return;
             }
 
@@ -169,9 +186,9 @@
             formData.append('name', $('#name').val());
             formData.append('email', $('#email').val());
             formData.append('phone', $('#phone').val());
-            formData.append('language', $('#language').val());
             formData.append('password', password);  // Use the actual password
             formData.append('password_confirmation', confirmPassword); // Use the actual confirm password
+            formData.append('country_id', $('#country_id').val());
             formData.append('avatar', $('#avatar')[0].files[0]);
 
             // Send the data via AJAX
@@ -186,16 +203,16 @@
                 },
                 success: function(response) {
                     if (response.success) {
-                        showToast('success', 'Driver created successfully!');
+        showToast('success', '{{ __("dashboard.drivers.created_success") }}');
                         $('#createDriverModal').modal('hide');
                         safeReload();
 
                     } else {
-                        showToast('error', response.message || 'Failed to create driver');
+        showToast('error', '{{ __("dashboard.drivers.created_failed") }}');
                     }
                 },
                 error: function(xhr, status, error) {
-                    showToast('error', error + ' An error occurred while creating the driver.');
+    showToast('error', '{{ __("dashboard.drivers.error_occurred") }}');
                 }
             });
         });
@@ -217,7 +234,7 @@ $('#drivers-table').on('click', '.edit-item', function() {
                 $('#update_name').val(driver.name);
                 $('#update_email').val(driver.email);
                 $('#update_phone').val(driver.phone);
-                $('#update_language').val(driver.language);
+                $('#update_country_id').val(driver.country_id);
                 // You can show the avatar image if needed
                 // Example: $('#update_avatar_preview').attr('src', driver.avatar);
 
@@ -225,6 +242,7 @@ $('#drivers-table').on('click', '.edit-item', function() {
                 $('#updateDriverModal').modal('show');
             } else {
                 showToast('error', 'Failed to fetch driver data');
+                
             }
         },
         error: function(xhr, status, error) {
@@ -239,7 +257,7 @@ $('#drivers-table').on('click', '.edit-item', function() {
         const name = $('#update_name').val();
         const email = $('#update_email').val();
         const phone = $('#update_phone').val();
-        const language = $('#update_language').val();
+            const countryId = $('#update_country_id').val();
             const avatar = $('#update_avatar')[0].files[0]; // Handle avatar file
 
             const formData = new FormData();
@@ -247,7 +265,7 @@ $('#drivers-table').on('click', '.edit-item', function() {
             formData.append('name', name);
             formData.append('email', email);
             formData.append('phone', phone);
-            formData.append('language', language);
+            formData.append('country_id', countryId);
             if (avatar) {
                 formData.append('avatar', avatar);  // Append avatar if it's changed
             }

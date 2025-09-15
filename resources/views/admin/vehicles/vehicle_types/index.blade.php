@@ -13,14 +13,21 @@
 
 @section('content')
 
-<button class="btn btn-primary mb-3" id="createVehicleTypeBtn">Add New Vehicle Type</button>
+<button class="btn btn-primary mb-3" id="createVehicleTypeBtn">{{ __('dashboard.vehicles.add_new_vehicle_type') }}</button>
 
 <div class="table-responsive">
     <x-data-table
-        title="Vehicle Types"
+        title="{{ __('dashboard.vehicles.vehicle_types') }}"
         table-id="vehicle-types-table"
         fetch-url="{{ route('admin.vehicle_types.data') }}"
-        :columns="['Name', 'Description', 'Start Fare', 'Day KM Rate', 'Night KM Rate', 'Actions']"
+        :columns="[
+            __('dashboard.vehicles.name'),
+            __('dashboard.vehicles.description'),
+            __('dashboard.vehicles.start_fare'),
+            __('dashboard.vehicles.day_per_km_rate'),
+            __('dashboard.vehicles.night_per_km_rate'),
+            __('dashboard.vehicles.actions')
+        ]"
         :columns-config="[
             ['data' => 'name', 'name' => 'name'],
             ['data' => 'description', 'name' => 'description'],
@@ -37,48 +44,48 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="createVehicleTypeModalLabel">Create New Vehicle Type</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title" id="createVehicleTypeModalLabel">{{ __('dashboard.vehicles.create_vehicle_type') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('dashboard.vehicles.close') }}"></button>
             </div>
             <div class="modal-body">
                 <form id="createVehicleTypeForm">
                     <div class="mb-3">
-                        <label for="name" class="form-label">Name</label>
+                        <label for="name" class="form-label">{{ __('dashboard.vehicles.name') }}</label>
                         <input type="text" class="form-control" id="name" required>
                     </div>
                     <div class="mb-3">
-                        <label for="description" class="form-label">Description</label>
+                        <label for="description" class="form-label">{{ __('dashboard.vehicles.description') }}</label>
                         <input type="text" class="form-control" id="description" required>
                     </div>
                     <div class="mb-3">
-                        <label for="start_fare" class="form-label">Start Fare</label>
+                        <label for="start_fare" class="form-label">{{ __('dashboard.vehicles.start_fare') }}</label>
                         <input type="number" step="0.01" class="form-control" id="start_fare" required>
                     </div>
                     <div class="mb-3">
-                        <label for="day_per_km_rate" class="form-label">Day Per KM Rate</label>
+                        <label for="day_per_km_rate" class="form-label">{{ __('dashboard.vehicles.day_per_km_rate') }}</label>
                         <input type="number" step="0.01" class="form-control" id="day_per_km_rate" required>
                     </div>
                     <div class="mb-3">
-                        <label for="night_per_km_rate" class="form-label">Night Per KM Rate</label>
+                        <label for="night_per_km_rate" class="form-label">{{ __('dashboard.vehicles.night_per_km_rate') }}</label>
                         <input type="number" step="0.01" class="form-control" id="night_per_km_rate" required>
                     </div>
                     <div class="mb-3">
-                        <label for="day_per_minute_rate" class="form-label">Day Per Minute Rate</label>
+                        <label for="day_per_minute_rate" class="form-label">{{ __('dashboard.vehicles.day_per_minute_rate') }}</label>
                         <input type="number" step="0.01" class="form-control" id="day_per_minute_rate" required>
                     </div>
                     <div class="mb-3">
-                        <label for="night_per_minute_rate" class="form-label">Night Per Minute Rate</label>
+                        <label for="night_per_minute_rate" class="form-label">{{ __('dashboard.vehicles.night_per_minute_rate') }}</label>
                         <input type="number" step="0.01" class="form-control" id="night_per_minute_rate" required>
                     </div>
-                    <div class="mb-3">
-                        <label for="is_active" class="form-label">Active</label>
+                    <div class="mb-3 form-check">
                         <input type="checkbox" class="form-check-input" id="is_active">
+                        <label for="is_active" class="form-check-label">{{ __('dashboard.vehicles.active') }}</label>
                     </div>
                     <div class="mb-3">
-                        <label for="icon_url" class="form-label">Icon</label>
+                        <label for="icon_url" class="form-label">{{ __('dashboard.vehicles.icon') }}</label>
                         <input type="file" class="form-control" id="icon_url" accept="image/*">
                     </div>
-                    <button type="submit" class="btn btn-primary">Create Vehicle Type</button>
+                    <button type="submit" class="btn btn-primary">{{ __('dashboard.vehicles.create') }}</button>
                 </form>
             </div>
         </div>
@@ -90,53 +97,50 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="updateVehicleTypeModalLabel">Update Vehicle Type</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title" id="updateVehicleTypeModalLabel">{{ __('dashboard.vehicles.update_vehicle_type') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('dashboard.vehicles.close') }}"></button>
             </div>
             <div class="modal-body">
                 <form id="updateVehicleTypeForm">
                     <input type="hidden" id="update_vehicle_type_id">
                     <div class="mb-3">
-                        <label for="update_name" class="form-label">Name</label>
+                        <label for="update_name" class="form-label">{{ __('dashboard.vehicles.name') }}</label>
                         <input type="text" class="form-control" id="update_name" required>
                     </div>
                     <div class="mb-3">
-                        <label for="update_description" class="form-label">Description</label>
+                        <label for="update_description" class="form-label">{{ __('dashboard.vehicles.description') }}</label>
                         <input type="text" class="form-control" id="update_description" required>
                     </div>
                     <div class="mb-3">
-                        <label for="update_start_fare" class="form-label">Start Fare</label>
+                        <label for="update_start_fare" class="form-label">{{ __('dashboard.vehicles.start_fare') }}</label>
                         <input type="number" step="0.01" class="form-control" id="update_start_fare" required>
                     </div>
                     <div class="mb-3">
-                        <label for="update_day_per_km_rate" class="form-label">Day Per KM Rate</label>
+                        <label for="update_day_per_km_rate" class="form-label">{{ __('dashboard.vehicles.day_per_km_rate') }}</label>
                         <input type="number" step="0.01" class="form-control" id="update_day_per_km_rate" required>
                     </div>
                     <div class="mb-3">
-                        <label for="update_night_per_km_rate" class="form-label">Night Per KM Rate</label>
+                        <label for="update_night_per_km_rate" class="form-label">{{ __('dashboard.vehicles.night_per_km_rate') }}</label>
                         <input type="number" step="0.01" class="form-control" id="update_night_per_km_rate" required>
                     </div>
                     <div class="mb-3">
-                        <label for="update_day_per_minute_rate" class="form-label">Day Per Minute Rate</label>
+                        <label for="update_day_per_minute_rate" class="form-label">{{ __('dashboard.vehicles.day_per_minute_rate') }}</label>
                         <input type="number" step="0.01" class="form-control" id="update_day_per_minute_rate" required>
                     </div>
                     <div class="mb-3">
-                        <label for="update_night_per_minute_rate" class="form-label">Night Per Minute Rate</label>
+                        <label for="update_night_per_minute_rate" class="form-label">{{ __('dashboard.vehicles.night_per_minute_rate') }}</label>
                         <input type="number" step="0.01" class="form-control" id="update_night_per_minute_rate" required>
                     </div>
-                    <div class="mb-3">
-                        <label for="update_is_active" class="form-label">Active</label>
+                    <div class="mb-3 form-check">
                         <input type="checkbox" class="form-check-input" id="update_is_active">
+                        <label for="update_is_active" class="form-check-label">{{ __('dashboard.vehicles.active') }}</label>
                     </div>
-                    <!-- Add an input field for the icon file upload in the Update Modal -->
                     <div class="mb-3">
-                        <label for="update_icon_url" class="form-label">Update Icon</label>
+                        <label for="update_icon_url" class="form-label">{{ __('dashboard.vehicles.update_icon') }}</label>
                         <input type="file" class="form-control" id="update_icon_url" accept="image/*">
                     </div>
-                    <!-- Optional: Display a preview of the current image -->
-                    <img id="current_icon_preview" src="" alt="Current Icon" width="50" />
-
-                    <button type="submit" class="btn btn-primary">Update Vehicle Type</button>
+                    <img id="current_icon_preview" src="" alt="{{ __('dashboard.vehicles.current_icon') }}" width="50" />
+                    <button type="submit" class="btn btn-primary">{{ __('dashboard.vehicles.update') }}</button>
                 </form>
             </div>
         </div>
@@ -144,6 +148,7 @@
 </div>
 
 @endsection
+
 
 @push('custom-scripts')
 <script>

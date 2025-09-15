@@ -10,86 +10,95 @@
     <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/dataTables.responsive.min.js"></script>
 @endpush
-
 @section('content')
-    <div class="d-flex gap-2 mb-3">
-        <button class="btn btn-primary" id="createVehicleTypeBtn">Add New Vehicle Type</button>
-        <button class="btn btn-warning" id="manageCommissionBtn">Manage Commission</button>
-    </div>
+<div class="d-flex gap-2 mb-3">
+    <button class="btn btn-primary" id="createVehicleTypeBtn">{{ __('dashboard.vehicles.add_new_vehicle_type') }}</button>
+    <button class="btn btn-warning" id="manageCommissionBtn">{{ __('dashboard.vehicles.manage_commission') }}</button>
+</div>
 
-    <div class="table-responsive">
-        <x-data-table title="Vehicle Types" table-id="vehicle-types-table"
-            fetch-url="{{ route('admin.vehicle_types.data') }}" :columns="['Name', 'Description', 'Commission', 'Status', 'Actions']" :columns-config="[
-                ['data' => 'name'],
-                ['data' => 'description'],
-                ['data' => 'commission'],
-                ['data' => 'status'],
-                ['data' => 'action', 'orderable' => false, 'searchable' => false],
-            ]" />
-    </div>
+<div class="table-responsive">
+    <x-data-table
+        title="{{ __('dashboard.vehicles.vehicle_types') }}"
+        table-id="vehicle-types-table"
+        fetch-url="{{ route('admin.vehicle_types.data') }}"
+        :columns="[
+            __('dashboard.vehicles.name'),
+            __('dashboard.vehicles.description'),
+            __('dashboard.vehicles.commission'),
+            __('dashboard.vehicles.status'),
+            __('dashboard.vehicles.actions')
+        ]"
+        :columns-config="[
+            ['data' => 'name'],
+            ['data' => 'description'],
+            ['data' => 'commission'],
+            ['data' => 'status'],
+            ['data' => 'action', 'orderable' => false, 'searchable' => false],
+        ]"
+    />
+</div>
 
-    <!-- Modal: Create -->
-    <div class="modal fade" id="createVehicleTypeModal" tabindex="-1">
-        <div class="modal-dialog">
-            <form id="createVehicleTypeForm" class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Add Vehicle Type</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    @include('admin.vehicles.types._form-fields')
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Create</button>
-                </div>
-            </form>
-        </div>
+<!-- Modal: Create -->
+<div class="modal fade" id="createVehicleTypeModal" tabindex="-1">
+    <div class="modal-dialog">
+        <form id="createVehicleTypeForm" class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ __('dashboard.vehicles.create_vehicle_type') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                @include('admin.vehicles.types._form-fields')
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">{{ __('dashboard.vehicles.create') }}</button>
+            </div>
+        </form>
     </div>
+</div>
 
-    <!-- Modal: Update -->
-    <div class="modal fade" id="updateVehicleTypeModal" tabindex="-1">
-        <div class="modal-dialog">
-            <form id="updateVehicleTypeForm" class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Edit Vehicle Type</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" id="update_vehicle_type_id">
-                    @include('admin.vehicles.types._form-fields', ['prefix' => 'update_'])
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Update</button>
-                </div>
-            </form>
-        </div>
+<!-- Modal: Update -->
+<div class="modal fade" id="updateVehicleTypeModal" tabindex="-1">
+    <div class="modal-dialog">
+        <form id="updateVehicleTypeForm" class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ __('dashboard.vehicles.update_vehicle_type') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="update_vehicle_type_id">
+                @include('admin.vehicles.types._form-fields', ['prefix' => 'update_'])
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">{{ __('dashboard.vehicles.update') }}</button>
+            </div>
+        </form>
     </div>
+</div>
 
-    <!-- Modal: Commission Management -->
-    <div class="modal fade" id="commissionModal" tabindex="-1">
-        <div class="modal-dialog">
-            <form id="commissionForm" class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Manage Commission Percentage</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="commission_percentage" class="form-label">Commission Percentage</label>
-                        <div class="input-group">
-                            <input type="number" class="form-control" id="commission_percentage"
-                                name="commission_percentage" min="0" max="100" step="0.01" required>
-                            <span class="input-group-text">%</span>
-                        </div>
-                        <div class="form-text">This percentage will be applied to all vehicle types globally.</div>
+<!-- Modal: Commission Management -->
+<div class="modal fade" id="commissionModal" tabindex="-1">
+    <div class="modal-dialog">
+        <form id="commissionForm" class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ __('dashboard.vehicles.update_commission') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="commission_percentage" class="form-label">{{ __('dashboard.vehicles.commission_percentage') }}</label>
+                    <div class="input-group">
+                        <input type="number" class="form-control" id="commission_percentage" name="commission_percentage" min="0" max="100" step="0.01" required>
+                        <span class="input-group-text">%</span>
                     </div>
+                    <div class="form-text">{{ __('dashboard.vehicles.commission_note') ?? 'This percentage will be applied to all vehicle types globally.' }}</div>
                 </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-warning">Update Commission</button>
-                </div>
-            </form>
-        </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-warning">{{ __('dashboard.vehicles.update_commission') }}</button>
+            </div>
+        </form>
     </div>
+</div>
 @endsection
 
 @push('custom-scripts')

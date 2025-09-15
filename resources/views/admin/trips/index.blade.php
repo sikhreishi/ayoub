@@ -75,113 +75,115 @@
 @endpush
 @extends('layouts.app')
 @section('content')
-    <div class="table-responsive">
-        <x-data-table title="Trips Management" table-id="trips-table"
-            fetch-url="{{ route('admin.trips.byStatus') }}{{ isset($status) && $status ? '?status=' . $status : '' }}"
-            :columns="[
-                'ID',
-                'User Name',
-                'Driver Name',
-                'Status',
-                'Estimated Fare',
-                'Final Fare',
-                'Payment Status',
-                'Payment Method',
-                'Requested At',
-                'Completed At',
-                'Actions',
-            ]" :columns-config="[
-                ['data' => 'id', 'name' => 'id'],
-                ['data' => 'user_name', 'name' => 'user_name'],
-                ['data' => 'driver_name', 'name' => 'driver_name'],
-                ['data' => 'status', 'name' => 'status'],
-                ['data' => 'estimated_fare', 'name' => 'estimated_fare'],
-                ['data' => 'final_fare', 'name' => 'final_fare'],
-                ['data' => 'payment_status', 'name' => 'payment_status'],
-                ['data' => 'payment_method', 'name' => 'payment_method'],
-                ['data' => 'requested_at', 'name' => 'requested_at'],
-                ['data' => 'completed_at', 'name' => 'completed_at'],
-                ['data' => 'actions', 'name' => 'actions', 'orderable' => false, 'searchable' => false],
-            ]" />
-    </div>
+<div class="table-responsive">
+    <x-data-table
+        title="{{ __('dashboard.trips.trips_management') }}"
+        table-id="trips-table"
+        fetch-url="{{ route('admin.trips.byStatus') }}{{ isset($status) && $status ? '?status=' . $status : '' }}"
+        :columns="[
+            __('dashboard.trips.id'),
+            __('dashboard.trips.user_name'),
+            __('dashboard.trips.driver_name'),
+            __('dashboard.trips.status'),
+            __('dashboard.trips.estimated_fare'),
+            __('dashboard.trips.final_fare'),
+            __('dashboard.trips.payment_status'),
+            __('dashboard.trips.payment_method'),
+            __('dashboard.trips.requested_at'),
+            __('dashboard.trips.completed_at'),
+            __('dashboard.trips.actions'),
+        ]"
+        :columns-config="[
+            ['data' => 'id', 'name' => 'id'],
+            ['data' => 'user_name', 'name' => 'user_name'],
+            ['data' => 'driver_name', 'name' => 'driver_name'],
+            ['data' => 'status', 'name' => 'status'],
+            ['data' => 'estimated_fare', 'name' => 'estimated_fare'],
+            ['data' => 'final_fare', 'name' => 'final_fare'],
+            ['data' => 'payment_status', 'name' => 'payment_status'],
+            ['data' => 'payment_method', 'name' => 'payment_method'],
+            ['data' => 'requested_at', 'name' => 'requested_at'],
+            ['data' => 'completed_at', 'name' => 'completed_at'],
+            ['data' => 'actions', 'name' => 'actions', 'orderable' => false, 'searchable' => false],
+        ]"
+    />
+</div>
 
-    <!-- Driver Location Modal -->
-    <div class="modal fade" id="driverLocationModal" tabindex="-1" aria-labelledby="driverLocationModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title" id="driverLocationModalLabel">
-                        <i class="material-icons-outlined me-2">location_on</i>
-                        Real-time Driver Location
-                        <span class="realtime-indicator"></span>
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                        aria-label="Close"></button>
-                </div>
-                <div class="modal-body p-0">
-                    <div id="driverInfo" class="driver-info m-3" style="display: none;">
+<!-- Driver Location Modal -->
+<div class="modal fade" id="driverLocationModal" tabindex="-1" aria-labelledby="driverLocationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="driverLocationModalLabel">
+                    <i class="material-icons-outlined me-2">location_on</i>
+                    {{ __('dashboard.trips.driver_location') }}
+                    <span class="realtime-indicator"></span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="{{ __('dashboard.trips.close') }}"></button>
+            </div>
+            <div class="modal-body p-0">
+                <div id="driverInfo" class="driver-info m-3" style="display: none;">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><i class="material-icons-outlined me-1">person</i>{{ __('dashboard.trips.driver_info') }}</h6>
+                            <p><strong>{{ __('dashboard.trips.name') }}:</strong> <span id="driverName"></span></p>
+                            <p><strong>{{ __('dashboard.trips.phone') }}:</strong> <span id="driverPhone"></span></p>
+                            <p><strong>{{ __('dashboard.trips.status') }}:</strong> <span id="driverStatus" class="location-status"></span></p>
+                            <p><strong>{{ __('dashboard.trips.last_update') }}:</strong> <span id="lastUpdate"></span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="material-icons-outlined me-1">route</i>{{ __('dashboard.trips.trip_details') }}</h6>
+                            <p><strong>{{ __('dashboard.trips.trip_id') }}:</strong> <span id="tripId"></span></p>
+                            <p><strong>{{ __('dashboard.trips.distance_to_pickup') }}:</strong> <span id="distanceToPickup"></span></p>
+                            <p><strong>{{ __('dashboard.trips.distance_to_dropoff') }}:</strong> <span id="distanceToDropoff"></span></p>
+                            <p><strong>{{ __('dashboard.trips.total_trip_distance') }}:</strong> <span id="totalDistance"></span></p>
+                        </div>
+                    </div>
+
+                    <div class="firebase-data">
+                        <h6><i class="material-icons-outlined me-1">cloud</i>{{ __('dashboard.trips.firebase_data') }}</h6>
                         <div class="row">
-                            <div class="col-md-6">
-                                <h6><i class="material-icons-outlined me-1">person</i>Driver Information</h6>
-                                <p><strong>Name:</strong> <span id="driverName"></span></p>
-                                <p><strong>Phone:</strong> <span id="driverPhone"></span></p>
-                                <p><strong>Status:</strong> <span id="driverStatus" class="location-status"></span></p>
-                                <p><strong>Last Update:</strong> <span id="lastUpdate"></span></p>
+                            <div class="col-md-4">
+                                <small><strong>{{ __('dashboard.trips.coordinates') }}:</strong></small><br>
+                                <small>{{ __('dashboard.trips.lat') }}: <span id="firebaseLat">-</span></small><br>
+                                <small>{{ __('dashboard.trips.lng') }}: <span id="firebaseLng">-</span></small>
                             </div>
-                            <div class="col-md-6">
-                                <h6><i class="material-icons-outlined me-1">route</i>Trip Details</h6>
-                                <p><strong>Trip ID:</strong> <span id="tripId"></span></p>
-                                <p><strong>Distance to Pickup:</strong> <span id="distanceToPickup"></span></p>
-                                <p><strong>Distance to Dropoff:</strong> <span id="distanceToDropoff"></span></p>
-                                <p><strong>Total Trip Distance:</strong> <span id="totalDistance"></span></p>
+                            <div class="col-md-4">
+                                <small><strong>{{ __('dashboard.trips.geohash') }}:</strong></small><br>
+                                <small><span id="firebaseGeohash">-</span></small>
                             </div>
-                        </div>
-
-                        <!-- Firebase Real-time Data -->
-                        <div class="firebase-data">
-                            <h6><i class="material-icons-outlined me-1">cloud</i>Firebase Real-time Data</h6>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <small><strong>Coordinates:</strong></small><br>
-                                    <small>Lat: <span id="firebaseLat">-</span></small><br>
-                                    <small>Lng: <span id="firebaseLng">-</span></small>
-                                </div>
-                                <div class="col-md-4">
-                                    <small><strong>Geohash:</strong></small><br>
-                                    <small><span id="firebaseGeohash">-</span></small>
-                                </div>
-                                <div class="col-md-4">
-                                    <small><strong>Firebase Status:</strong></small><br>
-                                    <small><span id="firebaseStatus">-</span></small>
-                                </div>
+                            <div class="col-md-4">
+                                <small><strong>{{ __('dashboard.trips.firebase_status') }}:</strong></small><br>
+                                <small><span id="firebaseStatus">-</span></small>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <div id="map"></div>
+                <div id="map"></div>
 
-                    <div id="loadingMap" class="text-center p-5">
-                        <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
-                            <span class="visually-hidden">Loading...</span>
-                        </div>
-                        <p class="mt-3 text-muted">Loading real-time driver location from Firebase...</p>
+                <div id="loadingMap" class="text-center p-5">
+                    <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                        <span class="visually-hidden">{{ __('dashboard.trips.loading') }}</span>
                     </div>
+                    <p class="mt-3 text-muted">{{ __('dashboard.trips.loading') }}</p>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        <i class="material-icons-outlined me-1">close</i>Close
-                    </button>
-                    <button type="button" class="btn btn-primary" id="refreshLocation">
-                        <i class="material-icons-outlined me-1">refresh</i>Refresh Location
-                    </button>
-                    <button type="button" class="btn btn-success" id="autoRefresh">
-                        <i class="material-icons-outlined me-1">autorenew</i>Auto Refresh: OFF
-                    </button>
-                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="material-icons-outlined me-1">close</i>{{ __('dashboard.trips.close') }}
+                </button>
+                <button type="button" class="btn btn-primary" id="refreshLocation">
+                    <i class="material-icons-outlined me-1">refresh</i>{{ __('dashboard.trips.refresh_location') }}
+                </button>
+                <button type="button" class="btn btn-success" id="autoRefresh">
+                    <i class="material-icons-outlined me-1">autorenew</i>{{ __('dashboard.trips.auto_refresh') }}
+                </button>
             </div>
         </div>
     </div>
+</div>
+
 @endsection
 
 @push('plugin-scripts')

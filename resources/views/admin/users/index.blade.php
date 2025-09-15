@@ -10,19 +10,24 @@
 @endpush
 @extends('layouts.app')
 @section('content')
-    <button class="btn btn-primary mb-3" id="createUserBtn">Add New User</button>
+<button class="btn btn-primary mb-3" id="createUserBtn">{{ __('dashboard.users.add_new_user') }}</button>
 
     <div class="table-responsive">
-        <x-data-table title="Users" table-id="users-table" fetch-url="{{ route('admin.users.data') }}" :columns="['Name', 'Email', 'Phone', 'Language', 'Gender', 'Avatar', 'Actions']"
-            :columns-config="[
-                ['data' => 'name', 'name' => 'name'],
-                ['data' => 'email', 'name' => 'email'],
-                ['data' => 'phone', 'name' => 'phone'],
-                ['data' => 'language', 'name' => 'language'],
-                ['data' => 'gender', 'name' => 'gender'],
-                ['data' => 'avatar', 'name' => 'avatar', 'orderable' => false, 'searchable' => false],
-                ['data' => 'action', 'name' => 'action', 'orderable' => false, 'searchable' => false],
-            ]" />
+
+<x-data-table 
+    title="{{ __('dashboard.users.users') }}" 
+    table-id="users-table" 
+    fetch-url="{{ route('admin.users.data') }}"
+    :columns="[__('dashboard.users.name'), __('dashboard.users.email'), __('dashboard.users.phone'), __('dashboard.users.avatar'), __('dashboard.users.actions')]"
+    :columns-config="[
+        ['data' => 'name', 'name' => 'name'],
+        ['data' => 'email', 'name' => 'email'],
+        ['data' => 'phone', 'name' => 'phone'],
+        ['data' => 'avatar', 'name' => 'avatar', 'orderable' => false, 'searchable' => false],
+        ['data' => 'action', 'name' => 'action', 'orderable' => false, 'searchable' => false],
+    ]" 
+/>
+
 
     </div>
 
@@ -32,41 +37,50 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="createUserModalLabel">Create New User</h5>
+                        <h5 class="modal-title" id="createUserModalLabel">{{ __('dashboard.users.create_new_user') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="createUserForm">
                         <div class="mb-3">
-                            <label for="name" class="form-label">Name</label>
+<label for="name" class="form-label">{{ __('dashboard.users.name') }}</label>
                             <input type="text" class="form-control" id="name" required>
                         </div>
                         <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
+<label for="email" class="form-label">{{ __('dashboard.users.email') }}</label>
                             <input type="email" class="form-control" id="email" required>
                         </div>
                         <div class="mb-3">
-                            <label for="phone" class="form-label">Phone</label>
+<label for="phone" class="form-label">{{ __('dashboard.users.phone') }}</label>
                             <input type="text" class="form-control" id="phone">
-                        </div>
-                        <div class="mb-3">
-                            <label for="language" class="form-label">Language</label>
-                            <input type="text" class="form-control" id="language">
-                        </div>
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="password" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="password_confirmation" class="form-label">Confirm Password</label>
-                            <input type="password" class="form-control" id="password_confirmation" required>
                         </div>
 
                         <div class="mb-3">
-                            <label for="avatar" class="form-label">Avatar</label>
+<label for="password" class="form-label">{{ __('dashboard.users.password') }}</label>
+                            <input type="password" class="form-control" id="password" required>
+                        </div>
+                        <div class="mb-3">
+<label for="password_confirmation" class="form-label">{{ __('dashboard.users.confirm_password') }}</label>
+                            <input type="password" class="form-control" id="password_confirmation" required>
+                        </div>
+                        <div class="mb-3">
+<label for="country_id" class="form-label">{{ __('dashboard.users.country') }}</label>
+                            <select class="form-select" id="country_id" required>
+                            <option value="">{{ __('dashboard.users.select_country') }}</option>
+@foreach ($countries as $country)
+    <option value="{{ $country->id }}">
+        {{ app()->getLocale() === 'ar' ? $country->name_ar : $country->name_en }}
+    </option>
+@endforeach
+                            </select>
+                        </div>
+
+
+                        <div class="mb-3">
+<label for="avatar" class="form-label">{{ __('dashboard.users.avatar') }}</label>
                             <input type="file" class="form-control" id="avatar">
                         </div>
-                        <button type="submit" class="btn btn-primary">Create Driver</button>
+<button type="submit" class="btn btn-primary">{{ __('dashboard.users.create') }}</button>
                     </form>
                 </div>
             </div>
@@ -79,7 +93,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="updateUserModalLabel">Update User</h5>
+<h5 class="modal-title" id="updateUserModalLabel">{{ __('dashboard.users.update_user') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -87,27 +101,36 @@
                         <input type="hidden" id="update_user_id"> <!-- Hidden field for user ID -->
 
                         <div class="mb-3">
-                            <label for="update_name" class="form-label">Name</label>
+<label for="update_name" class="form-label">{{ __('dashboard.users.name') }}</label>
                             <input type="text" class="form-control" id="update_name" required>
                         </div>
                         <div class="mb-3">
-                            <label for="update_email" class="form-label">Email</label>
+<label for="update_email" class="form-label">{{ __('dashboard.users.email') }}</label>
                             <input type="email" class="form-control" id="update_email" required>
                         </div>
                         <div class="mb-3">
-                            <label for="update_phone" class="form-label">Phone</label>
+<label for="update_phone" class="form-label">{{ __('dashboard.users.phone') }}</label>
                             <input type="text" class="form-control" id="update_phone">
                         </div>
+
                         <div class="mb-3">
-                            <label for="update_language" class="form-label">Language</label>
-                            <input type="text" class="form-control" id="update_language">
+<label for="update_country_id" class="form-label">{{ __('dashboard.users.country') }}</label>
+                            <select class="form-select" id="update_country_id" required>
+<option value="">{{ __('dashboard.users.select_country') }}</option>
+@foreach ($countries as $country)
+    <option value="{{ $country->id }}">
+        {{ app()->getLocale() === 'ar' ? $country->name_ar : $country->name_en }}
+    </option>
+@endforeach
+                            </select>
                         </div>
+
                         <div class="mb-3">
-                            <label for="update_avatar" class="form-label">Avatar</label>
+<label for="update_avatar" class="form-label">{{ __('dashboard.users.avatar') }}</label>
                             <input type="file" class="form-control" id="update_avatar">
                         </div>
 
-                        <button type="submit" class="btn btn-primary">Update Driver</button>
+<button type="submit" class="btn btn-primary">{{ __('dashboard.users.update') }}</button>
                     </form>
                 </div>
             </div>
@@ -141,7 +164,7 @@
 
                 // Check if password and confirm password match
                 if (password !== confirmPassword) {
-                    showToast('error', 'Passwords do not match!');
+showToast('error', '{{ __("dashboard.users.passwords_not_match") }}');
                     return;
                 }
 
@@ -149,10 +172,10 @@
                 formData.append('name', $('#name').val());
                 formData.append('email', $('#email').val());
                 formData.append('phone', $('#phone').val());
-                formData.append('language', $('#language').val());
                 formData.append('password', password); // Use the actual password
                 formData.append('password_confirmation',
                 confirmPassword); // Use the actual confirm password
+                formData.append('country_id', $('#country_id').val());
                 formData.append('avatar', $('#avatar')[0].files[0]);
 
                 // Send the data via AJAX
@@ -168,11 +191,11 @@
                     },
                     success: function(response) {
                         if (response.success) {
-                            showToast('success', 'User created successfully!');
+showToast('success', '{{ __("dashboard.users.created_success") }}');
                             $('#createUserModal').modal('hide');
                             safeReload(); // Reload the DataTable to show the new user
                         } else {
-                            showToast('error', response.message || 'Failed to create user');
+showToast('error', '{{ __("dashboard.users.created_failed") }}');
                         }
                     },
                     error: function(xhr, status, error) {
@@ -200,7 +223,6 @@
                             $('#update_name').val(user.name);
                             $('#update_email').val(user.email);
                             $('#update_phone').val(user.phone);
-                            $('#update_language').val(user.language);
                             // You can show the avatar image if needed
                             // Example: $('#update_avatar_preview').attr('src', user.avatar);
 
@@ -222,7 +244,8 @@
                 const name = $('#update_name').val();
                 const email = $('#update_email').val();
                 const phone = $('#update_phone').val();
-                const language = $('#update_language').val();
+
+                
                 const avatar = $('#update_avatar')[0].files[0]; // Handle avatar file
 
                 const formData = new FormData();
@@ -230,7 +253,8 @@
                 formData.append('name', name);
                 formData.append('email', email);
                 formData.append('phone', phone);
-                formData.append('language', language);
+                formData.append('country_id', $('#update_country_id').val());
+
                 if (avatar) {
                     formData.append('avatar', avatar); // Append avatar if it's changed
                 }
@@ -248,11 +272,11 @@
                     },
                     success: function(response) {
                         if (response.success) {
-                            showToast('success', 'User updated successfully!');
+showToast('success', '{{ __("dashboard.users.updated_success") }}');
                             $('#updateUserModal').modal('hide');
                             safeReload(); // Reload the DataTable to show the updated user
                         } else {
-                            showToast('error', response.message || 'Failed to update user');
+showToast('error', '{{ __("dashboard.users.updated_failed") }}');
                         }
                     },
                     error: function(xhr, status, error) {

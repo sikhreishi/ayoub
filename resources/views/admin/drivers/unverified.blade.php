@@ -22,10 +22,10 @@
     <div class="table-responsive">
 
         <x-data-table
-            title="Drivers"
+    title="{{ __('dashboard.users.drivers') }}" 
             table-id="drivers-table"
             fetch-url="{{ route('admin.drivers.unverified.data') }}"
-            :columns="['Name', 'Email', 'Phone', 'Avatar', 'Actions']"
+            :columns="[__('dashboard.users.name'), __('dashboard.users.email'), __('dashboard.users.phone'), __('dashboard.users.avatar'), __('dashboard.users.actions')]"
             :columns-config="[
                 ['data' => 'name', 'name' => 'name'],
                 ['data' => 'email', 'name' => 'email'],

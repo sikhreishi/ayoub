@@ -163,6 +163,7 @@ class UserTripController extends Controller
             'dropoff_name' => 'required|string|max:255',
             'vehicle_type_id' => 'required|exists:vehicle_types,id',
             'estimated_fare' => 'nullable|numeric|min:0',
+            'payment_method' => 'nullable|string|in:cash,card,wallet',
 
             'distance_meters' => 'nullable|numeric|min:0',
             'distance_km' => 'nullable|numeric|min:0',
@@ -377,6 +378,7 @@ class UserTripController extends Controller
         $pickupName = request()->pickup_name;
         $dropoffName = request()->dropoff_name;
         $estimatedFare = request()->estimated_fare;
+        $paymentMethod = request()->payment_method ?? 'cash';
 
 
         $userId = auth()->id(); 
@@ -393,7 +395,7 @@ class UserTripController extends Controller
         $trip->dropoff_name = $dropoffName;
         $trip->estimated_fare = $estimatedFare;
         $trip->vehicle_type_id = $vehicleTypeId;
-        $trip->payment_method = 'cash'; 
+        $trip->payment_method = $paymentMethod; 
         $trip->status = 'pending';
         $trip->save();
 

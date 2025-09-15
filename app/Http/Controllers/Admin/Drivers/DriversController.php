@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Vehicle\VehicleType;
 use App\Services\AudiLogsService;
+use App\Models\Wallet;
 
 class DriversController extends Controller
 {
@@ -18,7 +19,8 @@ class DriversController extends Controller
      */
     public function index(Request $request)
     {
-        return view('admin.drivers.index');
+         $countries = \App\Models\Country::all();
+        return view('admin.drivers.index', compact('countries'));
     }
 
     public function unverifiedIndex()
@@ -109,8 +111,8 @@ class DriversController extends Controller
                 'name' => 'required|string|max:255',
                 'email' => 'required|string|email|max:255|unique:users,email',
                 'phone' => 'nullable|string|max:15',
-                'language' => 'nullable|string|max:50',
                 'password' => 'required|string|min:8|confirmed', // Ensure passwords match
+                'country_id' => 'nullable|exists:countries,id',
                 'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Optional avatar validation
             ]);
 
@@ -120,18 +122,34 @@ class DriversController extends Controller
             $user->name = $request->input('name');
             $user->email = $request->input('email');
             $user->phone = $request->input('phone');
-            $user->language = $request->input('language');
             $user->password = bcrypt($request->input('password'));
 
-            // Handle avatar file upload (if provided)
+            $user->country_id = $request->input('country_id');
             if ($request->hasFile('avatar')) {
                 $user->avatar = $request->file('avatar')->store('avatars', 'public');
             }
 
             $user->save();
 
-            // Assign the 'driver' role to the new user
-            $user->assignRole('driver'); // Ensure the role exists
+            $user->assignRole('driver'); 
+
+            $user->wallet()->save(new Wallet(['balance' => 0.00]));
+            $vehicle = \App\Models\Vehicle\Vehicle::create([
+                'vehicle_type_id' => 1,
+                'make' => null,
+                'model' => null,
+                'year' => null,
+                'license_plate' => null,
+                'color' => null,
+            ]);
+            $user->driverProfile()->save(new \App\Models\DriverProfile([
+                'is_driver_verified' => false,
+                'complete_registration' => false,
+                'vehicle_id' => $vehicle->id,
+            ]));
+
+
+
             AudiLogsService::storeLog('create', 'users.driver', $user->id, null, $user->toArray());
 
             return response()->json([
@@ -220,7 +238,7 @@ class DriversController extends Controller
                 'name' => 'required|string|max:255',
                 'email' => 'required|string|email|max:255|unique:users,email,' . $id,
                 'phone' => 'nullable|string|max:15',
-                'language' => 'nullable|string|max:50',
+                'country_id' => 'nullable|exists:countries,id',
                 'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Optional avatar validation
             ]);
 
@@ -231,8 +249,7 @@ class DriversController extends Controller
             $user->name = $request->input('name');
             $user->email = $request->input('email');
             $user->phone = $request->input('phone');
-            $user->language = $request->input('language');
-
+            $user->country_id = $request->input('country_id');
             // Handle avatar file upload (if provided)
             if ($request->hasFile('avatar')) {
                 // Remove old avatar if it exists
@@ -244,6 +261,8 @@ class DriversController extends Controller
             }
 
             $user->save();
+
+
             $new = $user->fresh()->toArray();
 
             AudiLogsService::storeLog('update', 'users.driver', $user->id, $old, $new);

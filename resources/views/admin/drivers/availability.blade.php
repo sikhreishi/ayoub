@@ -19,15 +19,16 @@
 
     <div class="table-responsive">
         <x-data-table
-            title="Drivers"
+            title="{{ __('dashboard.users.drivers') }}" 
             table-id="drivers-table"
             fetch-url="{{ route('admin.drivers.available.data') }}"
-            :columns="['Name', 'Phone', 'Avatar', 'Last Ping', 'Actions']"
+            :columns="['Name', 'Phone', 'Avatar', 'Actions']"
+            :columns="[__('dashboard.users.name'), __('dashboard.users.phone'), __('dashboard.users.avatar'), __('dashboard.users.actions')]"
+
             :columns-config="[
                 ['data' => 'name', 'name' => 'name'],
                 ['data' => 'phone', 'name' => 'phone'],
                 ['data' => 'avatar', 'name' => 'avatar', 'orderable' => false, 'searchable' => false],
-                ['data' => 'last_ping', 'name' => 'last_ping'],
                 ['data' => 'action', 'name' => 'action', 'orderable' => false, 'searchable' => false]
             ]"
         />

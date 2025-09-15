@@ -53,7 +53,10 @@ class User extends Authenticatable
     {
         return $this->hasOne(DriverProfile::class);
     }
-
+    public function vehicle()
+    {
+        return $this->hasOne(\App\Models\Vehicle\Vehicle::class, 'user_id');
+    }
     public function driverAvailability()
     {
         return $this->hasOne(DriverAvailability::class, 'driver_id');

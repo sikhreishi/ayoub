@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Yajra\Datatables\Facades\Datatables;
 use App\Services\Currency\CurrencyService;
+use App\Models\Wallet;
 
 
 
@@ -29,7 +30,7 @@ class WalletController extends Controller
             $user->wallet()->save(new Wallet(['balance' => 0.00]));
         }
         
-        $userCurrency = $user->country->code;
+        $userCurrency = $user->country->code ?? 'USD'; 
 
         $usdBalance = $user->wallet->balance;
 
