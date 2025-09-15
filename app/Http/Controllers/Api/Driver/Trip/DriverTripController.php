@@ -78,7 +78,9 @@ class DriverTripController extends Controller
 
             $driverId = auth()->user()->id;
             $driverInfo = $this->firebase->getDriverLocationFromFirebase($driverId);
-
+            if (!$driverInfo || !isset($driverInfo['lat'], $driverInfo['lng'])) {
+                return response()->json(['message' => 'Unable to get driver location.'], 500);
+            }
                 $trip->driver_accept_lat = $driverInfo['lat'];
                 $trip->driver_accept_lng = $driverInfo['lng'];
                 $trip->accepted_at = Carbon::now();
